@@ -7,15 +7,23 @@ Vorausgesetzt wird ein installierter Apache-Webserver.
 Fuer schulv wird darueber hinaus folgendes benoetigt:
 
 * OpenLDAP 2.x
-* PHP4-dev (CVS 4.2.0-dev) in einer modifizierten Version
 * libxml2 2.4.14
 * libxslt
+* PHP4-dev (CVS 4.2.0-dev) in einer modifizierten Version
 
 
 OpenLDAP 2.x
 ============
 
 die Einrichtung von OpenLDAP wird an anderer Stelle beschrieben.
+
+
+libxml2, libxslt
+================
+
+gibts unter http://www.xmlsoft.org/
+libxml2 kann man per FTP als fertiges Release ziehen.
+libxslt muss man aus deren CVS Repository ziehen.
 
 
 PHP4-CVS
