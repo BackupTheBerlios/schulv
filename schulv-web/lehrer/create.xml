@@ -1,0 +1,52 @@
+<schulv xmlns:cms="http://xml.edeal.de/cms/Format"
+	xmlns:formx="http://xml.edeal.de/formx/Format">
+
+<cms:data-import clear=""/>
+
+<h2>Lehrer anlegen</h2>
+
+
+<table width="600">
+
+<formx:form next="create2.xml">
+<formx:validator druid="schulv::lehrer" policy="create"/>
+
+<tr>
+  <td>Kuerzel:</td>
+  <td><formx:input type="text" name="kuerzel" maxlength="4">
+	<formx:valid_e>Bitte entfernen Sie die Sonderzeichen aus dem Kuerzel.</formx:valid_e>
+	<formx:valid_regex>^[A-Za-z0-9.-]+$</formx:valid_regex>
+	<formx:minlength>1</formx:minlength>
+	<formx:length_e>Bitte geben Sie das Kuerzel an.</formx:length_e>
+  </formx:input>
+  </td>
+</tr>
+
+<tr>
+  <td>Vorname:</td>
+  <td><formx:input type="text" name="vorname">
+	<formx:valid_e>Bitte entfernen Sie die Sonderzeichen aus dem Vornamen.</formx:valid_e>
+	<formx:valid_regex>^[A-Za-z0-9.-]+$</formx:valid_regex>
+	<formx:minlength>1</formx:minlength>
+	<formx:length_e>Bitte geben Sie den Vornamen an.</formx:length_e>
+  </formx:input>
+  </td>
+</tr>
+
+<tr>
+  <td>Nachname:</td>
+  <td> <formx:input type="text" name="nachname">
+	<formx:valid_e>Bitte geben Sie den Nachnamen an.</formx:valid_e>
+	<formx:valid_regex>^[A-Za-z0-9.-]+$</formx:valid_regex>
+  </formx:input>
+  </td>
+</tr>
+
+<tr><td> <formx:input type="submit" name="submit" value="weiter"/> </td></tr>
+
+
+</formx:form>
+
+</table>
+
+</schulv>

@@ -1,0 +1,102 @@
+
+<schulv xmlns:cms="http://xml.edeal.de/cms/Format"
+	xmlns:formx="http://xml.edeal.de/formx/Format">
+
+<cms:data-import druid="schulv::lehrer"/>
+
+<h2>Lehrerdatensatz bearbeiten</h2>
+
+<font size="+2">
+Vorname: <cms:value-of select="vorname"/> <br/>
+Nachname: <cms:value-of select="nachname"/> </font>
+<br/>
+<br/>
+
+<table width="600">
+
+<formx:form import="">
+  <formx:validator druid="schulv::lehrer" policy="finish"/>
+  <formx:storage druid="schulv::lehrer" policy="finish" mode="modify" onsuccess="/lehrer/" />
+
+<tr>
+  <td>Kuerzel:</td>
+  <td><formx:input type="text" name="kuerzel" maxlength="4">
+	<formx:valid_e>Bitte entfernen Sie die Sonderzeichen aus dem Kuerzel.</formx:valid_e>
+	<formx:valid_regex>^[A-Za-z0-9.-]+$</formx:valid_regex>
+	<formx:minlength>1</formx:minlength>
+	<formx:length_e>Bitte geben Sie das Kuerzel an.</formx:length_e>
+  </formx:input>
+  </td>
+</tr>
+
+<tr>
+  <td>Vorname:</td>
+  <td><formx:input type="text" name="vorname">
+	<formx:valid_e>Bitte entfernen Sie die Sonderzeichen aus dem Vornamen.</formx:valid_e>
+	<formx:valid_regex>^[A-Za-z0-9.-]+$</formx:valid_regex>
+	<formx:minlength>1</formx:minlength>
+	<formx:length_e>Bitte geben Sie den Vornamen an.</formx:length_e>
+  </formx:input>
+  </td>
+</tr>
+
+<tr>
+  <td>Nachname:</td>
+  <td> <formx:input type="text" name="nachname">
+	<formx:valid_e>Bitte geben Sie den Nachnamen an.</formx:valid_e>
+	<formx:valid_regex>^[A-Za-z0-9.-]+$</formx:valid_regex>
+  </formx:input>
+  </td>
+</tr>
+
+
+<tr>
+  <td>Geschlecht</td>
+  <td> <formx:input type="radio" name="geschlecht" value="maennlich"/> maennlich
+       <formx:input type="radio" name="geschlecht" value="weiblich"/> weiblich
+  </td>
+</tr>
+
+<tr>
+  <td>Geburtsdatum<br/>
+      (DD.MM.JJJJ)</td>
+  <td> <formx:input type="text" name="geburtsdatum">
+         <formx:valid_e>Bitte geben Sie das Geburtsdatum ein (DD.MM.YYYY)</formx:valid_e>
+         <formx:valid_regex>^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$</formx:valid_regex>
+       </formx:input>
+  </td>
+</tr>
+
+<tr>
+  <td>Anschrift</td>
+  <td> <formx:input type="textarea" name="adresse" rows="5" cols="40"/> </td>
+</tr>
+
+<tr>
+  <td>Telefonnummer</td>
+  <td> <formx:input type="text" name="telefonnummer"/></td>
+</tr>
+
+<tr>
+  <td>Lehramt</td>
+  <td> <formx:input type="select" name="lehramt">
+          <formx:optionlist datasource="schulv::verwaltung::lehraemter" key="kuerzel" label="description"/>
+       </formx:input>
+  </td>
+</tr>
+
+<tr>
+  <td>Lehrbefaehigung</td>
+  <td> <formx:input type="select" name="lehrbefaehigung[]" size="15" multiple="">
+          <formx:optionlist datasource="schulv::verwaltung::lehrbefaehigungen" key="kuerzel" label="description"/>
+       </formx:input>
+  </td>
+</tr>
+
+
+<tr><td> <formx:input type="submit" name="submit" value="weiter"/> </td></tr>
+
+</formx:form>
+</table>
+
+</schulv>
