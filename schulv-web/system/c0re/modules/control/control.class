@@ -15,48 +15,8 @@ $c = new control;
 $c->register();
 unset($c);
 
-class controlData {
-	var $ds;
-
-	function controlData($ds, $argv) {
-		$this->ds = new $ds($argv);
-	}
-
-	function init() {
-		return $this->ds->init();
-	}
-
-	function next() {
-		return $this->ds->next();
-	}
-
-	function get($key) {
-		return $this->ds->get($key);
-	}
-
-	function finish() {
-		return $this->ds->finish();
-	}
-
-	function show() {
-		return $this->ds->show();
-	}
-
-};
 
 class ControlHelper {
-
-	function add_datasource($name, $classname) {
-		global $__control_datasources;
-		$__control_datasources[$name] = $classname;
-	}
-
-	function get_datasource($name) {
-		global $__control_datasources;
-		if (array_key_exists($name, $__control_datasources))
-			return $__control_datasources[$name];
-		return false;
-	}
 
 };
 
@@ -76,9 +36,7 @@ class control extends element {
 
 		//register_tags(get_class($this), $this->tags);
 
-		global $__control_datasources;
 		global $__control_values;
-		$__control_datasources = array();
 		$__control_values = array();
 	}
 
@@ -128,8 +86,6 @@ class control extends element {
 
 	function handle_loop($current_node) {
 
-		global $__control_data;
-
 		$attrs = $current_node->attributes;
 
 		if (!($ds = get_attribute("datasource", $current_node))) {
@@ -137,27 +93,32 @@ class control extends element {
 			return false;
 		}
 
-		if (!($cn = ControlHelper::get_datasource($ds))) {
-			user_error(sprintf("Use of unknown datasource \"%s\" requested.", $ds));
-			return false;
-		}
-
 		$argv = array();
 		foreach($attrs as $a) {
 			$argv[$a->name] = $a->value;
 		}
-		$__control_data = new controlData($cn, $argv);
 
-		$parent = $__control_data->init();
-		if (!is_object($parent))
-			$parent = domxml_node("loop-result");
+		if (!($__control_data = core_use_datasource($ds, $argv)))
+			return false;
+
+		if (!($__control_data->init())) {
+			user_error("Initializing the datasource failed ($ds)");
+			return false;
+		}
+
+		$template = $argv['template'];
+		if (!$template)
+			$template = "loop-result";
+		$parent = domxml_node($template);
 
 		$nodes = array();
 		while($__control_data->next()) {
 			$node = $__control_data->show();
 			if (is_object($node))
 				$nodes[] = $node;
-			/*
+
+			/* TODO: allow child nodes as the content of the loop-element
+
 				//$parent = domxml_node("loop-container");
 				if ($current_node->has_child_nodes()) {
 						$clone = $current_node->clone_node(true);

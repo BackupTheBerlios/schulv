@@ -234,7 +234,8 @@ class FormXHelper {
 		$data = $_SESSION['__formx'][$nspc];
 		reset($data);
 		while(list($k,$v) = each($data)) {
-			core_set_param($k, $v, $prefix);
+			$vv = is_array($v) ? join(",", $v) : $v;
+			core_set_param($k, $vv, $prefix);
 		}
 	}
 
@@ -329,13 +330,15 @@ class formx extends element {
 	function namespace_handler($node) {
 		//echo sprintf("formx:nspc handler() node=%s<br/>\n", $node->node_name());
 		$name = $node->node_name();
+
+//		print "NAME $name";
 		switch($name) {
 			case "form":
 				return $this->formx_page($node);
 				break;
 			case "cleanup":
 				return $this->handle_cleanup($node);
-			default:
+			default: /* TODO: this is an ugly hack: this crap needs a clean-up !!! */
 				if (method_exists($this, $name))
 					return $this->{$name}($node);
 				break;
@@ -347,7 +350,6 @@ class formx extends element {
 
 		global $__formx_data;
 
-//		echo "formx_page()\n";
 		$__formx_data = new FormXData;
 
 		//print_er($_SESSION);
@@ -482,6 +484,70 @@ class formx extends element {
 		return false;
 	}
 
+	function handle_optionlist($node, &$parent) {
+
+		//print "::handle_optionlist()<br/>\n";
+
+		if (!($ds = get_attribute("datasource", $node))) {
+			user_error("&lt;formx:optionlist&gt; used without specifying attribute \"datasource\"");
+			return false;
+		}
+
+		if (!($key = get_attribute("key", $node))) {
+			user_error("&lt;formx:optionlist&gt; used without specifying attribute \"key\"");
+			return false;
+		}
+
+		if (!($label = get_attribute("label", $node))) {
+			user_error("&lt;formx:optionlist&gt; used without specifying attribute \"label\"");
+			return false;
+		}
+
+		$argv = array();
+		foreach($node->attributes() as $a) {
+			$argv[$a->name] = $a->value;
+		}
+
+		if (!($source = core_use_datasource($ds, $argv)))
+			return false;
+
+		if (!($source->init())) {
+			user_error("Initializing the Datasource failed");
+			return false;
+		}
+
+		$options = array();
+		$doc = new_xmldoc("1.0");
+		while($source->next()) {
+			$nn = $source->show();
+			if (is_object($nn)) {
+				$nname = $nn->node_name();
+				$doc->set_root($nn);
+
+//				print_er( $nn);
+				$xpath = xpath_new_context($doc);
+				$vk = xpath_eval($xpath, "/$nname/$key");
+				//print_er($vk, "K $key --");
+				$vl = xpath_eval($xpath, "/$nname/$label");
+				//print_er($vl, "L $label --");
+
+				unset($tmp1);
+				unset($tmp2);
+				if (is_object($vk) && is_array($vk->nodeset) && sizeof($vk->nodeset) > 0)
+					$tmp1 = $vk->nodeset[0]->get_content();
+				if (is_object($vl) && is_array($vl->nodeset) && sizeof($vl->nodeset) > 0)
+					$tmp2 = $vl->nodeset[0]->get_content();
+
+				$option = domxml_node("option");
+				$option->set_attribute("value", $tmp1);
+				$option->set_content($tmp2);
+				$options[] = $option;
+			}
+		}
+		$source->finish();
+
+		return $options;
+	}
 
 	function input($current_node) {
 
@@ -527,7 +593,7 @@ class formx extends element {
 		}
 
 		$element = array();
-		if (is_array($current_node->attributes)) {
+		if ($current_node->has_attributes()) {
 			foreach($current_node->attributes as $attr){
 				$element[$attr->name] = $attr->value;
 			}
@@ -535,12 +601,12 @@ class formx extends element {
 
 		/* interpretation der kinder des input-elements, um parameter zu setzen
 		 */
-		if (get_class($current_node) == "DomElement" && is_array($current_node->children())) {
+		if (get_class($current_node) == "DomElement" && $current_node->has_child_nodes()) {
 			foreach($current_node->children() as $child) {
 				if (get_class($child) != "DomElement")
 					continue;
 
-				switch($child->tagname) {
+				switch($child->node_name()) {
 					/* valid options */
 					case "valid_e":
 					case "valid_regex":
@@ -556,8 +622,23 @@ class formx extends element {
 
 					/* context-dependent valid options */
 					case "option":
-						if ($name != "checkbox" && $name != "radio" && $name != "select")
+						if ($type != "checkbox" && $type != "radio" && $type != "select")
 							continue;
+						break;
+
+					case "optionlist":
+						if ($type != "checkbox" && $type != "radio" && $type != "select")
+							continue;
+
+						$element['__siblings'] = array();
+						$ops = $this->handle_optionlist($child, &$element);
+						if (is_array($ops)) {
+							reset($ops);
+							foreach ($ops as $o) {
+								$inputnode->add_child($o);
+							}
+						}
+						continue; /* skip this argument; we handled it above */
 						break;
 
 					/* ignored options to prevent data corruption */
@@ -622,13 +703,13 @@ class formx extends element {
 	
 	function option($current_node,$old_childs){
 
-		if($this->current_input_type == "radio"){
+		if($this->current_input_type == "radio") {
 			$new_node = domxml_node("input");
 			$new_node->set_attribute("type","radio");
 			$new_node->set_attribute("name",$this->current_input_node->tagname);
 			$new_node->set_attribute(	"value",
 										get_attribute("value",$current_node));
-		}else{
+		} else {
 			$new_node = domxml_node("option");
 			if($label = get_attribute("label",$current_node))
 				$new_node->set_attribute("value",$label);

@@ -25,6 +25,7 @@ function core_init_system($root) {
 	$__core_system_data['dirs']['modules'] = $__core_base_path."/c0re/modules";
 	$__core_system_data['params'] = array();
 	$__core_system_data['druids'] = array();
+	$__core_system_data['datasources'] = array();
 	$__core_system_data['finish-handler'] = array();
 
 	$includepath = split(":", ini_get("include_path"));
@@ -85,13 +86,33 @@ function core_invoke_druid($druid, $method, $argv = array()) {
 	}
 
 	$cn = $__core_system_data['druids'][$druid];
-	$d = new $cn($argv);;
+	$d = new $cn($argv);
 	if (!method_exists($d, $method)) {
-		user_error("The druid \"$druid\" does not support method \"$druid\"");
+		user_error("The druid \"$druid\" does not support method \"$method\"");
 		return false;
 	}
 
 	return $d->{$method}();
+}
+
+function core_register_datasource($datasource, $classname) {
+	global $__core_system_data;
+	if (!array_key_exists($datasource, $__core_system_data['datasources'])) {
+		$__core_system_data['datasources'][$datasource] = $classname;
+		return true;
+	}
+	return false;
+}
+
+function core_use_datasource($datasource, $argv = array()) {
+	global $__core_system_data;
+	if (!array_key_exists($datasource, $__core_system_data['datasources'])) {
+		user_error("The datasource \"$datasource\" is unknown");
+		return false;
+	}
+
+	$cn = $__core_system_data['datasources'][$datasource];
+	return new $cn($argv);
 }
 
 /* }}} */
