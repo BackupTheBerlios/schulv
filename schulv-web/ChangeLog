@@ -1,4 +1,14 @@
 
+2002-03-07
+  - ein paar hausmeisterarbeiten (cleanups, ....)
+  - beginn der arbeit an einem schulvSchule Objekt
+  - die Lehrerverwaltung existiert in ausbaufaehiger Basis
+  - Verwaltungsdaten sind benutzbar und werden auch
+    tatsaechlich gebraucht ;)
+  - datasources koennen benutzt werden, und als quelle fuer
+    <select-options> dienen (<formx:optionlist datasource=/>)
+
+
 2002-02-20
    - neues tag <cms:redirect/>
    - neues tag <cms:cleanup/>
