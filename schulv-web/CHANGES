@@ -1,0 +1,10 @@
+zu formx:
+
+tags wurden umbenannt weil das den code
+sauberer macht
+
+die tags <name> und <value> innerhalb eines
+input tags gibt es nichtmehr sie müssen
+immer direkt angegeben werden.
+
+das tag <extrahtml> ist obsolete

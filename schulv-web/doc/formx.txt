@@ -1,0 +1,83 @@
+
+FormX
+===============
+
+
+<formx_page/>
+
+      leitet die verwaltung eines <form/>s durch FormX ein.
+
+      Attribute:
+
+      next
+		   setzt die URL der seite, die aufgerufen wird, wenn der validator
+		   nach dem submit sein ok gibt. dies erlaubt das verteilen der
+           dateneingabe auf mehrere logische seiten.
+
+
+Kinder von <formx_page/>
+------------------------
+
+<validator name=""/>
+
+      setzt einen handler fuer die plausibilitaetspruefung des formular-inhalts.
+	  das attribute "name" muss angegeben werden. alle uebrigen attribute sind
+      abhaengig vom gewaehlten validator.
+
+<storage name=""/>
+
+      setzt einen handler fuer die abspeicherung des formular-inhalts.
+	  das attribute "name" muss angegeben werden. alle uebrigen attribute sind
+      abhaengig vom gewaehlten handler.
+
+<importer name=""/>
+
+	  setzt einen handler fuer den datenimport des formular-inhalts (um z.B.
+      ein edit-formular mit daten aus der datenbank vorauszufuellen).
+	  das attribute "name" muss angegeben werden. alle uebrigen attribute sind
+      abhaengig vom gewaehlten handler.
+
+
+
+
+<input/>
+
+	  fuegt ein input-element zur liste der element hinzu. die kinder dieses
+      elementes bestimmen, wie formx die plausibiltaetspruefung macht.
+
+      Attribute:
+      type
+           typ des Elements; unterstuetzt werden vom formx-core folgende typen:
+           hidden, text, textarea, radio, checkbox, submit
+
+      name, value
+           bestimmt name und wert des elementes.
+
+
+Kinder von <input/>, wenn unterhalb von <formx_page/>
+-----------------------------------------------------
+
+einige dieser kinder machen nur bei bestimmten input-element-typen sinn.
+(z.B. minlength nicht mit radio verwenden)
+
+<length_e/>
+
+	  der content dieses containers setzt die fehlermeldung, die ausgegeben
+      wird, falls die mindestlaenge nicht erreicht wird
+
+<minlength/>
+
+      setzt die einzuhaltende mindestlaenge des contents.
+      wird nur ueberprueft, wenn <length_e/> angegeben wurde.
+
+<valid_e/>
+
+	  der content dieses containers setzt die fehlermeldung, die ausgegeben
+      wird, falls <valid_regex/> nicht matched.
+
+<valid_regex/>
+
+      setzt die fuer den syntax-check zu verwendende regular expression.
+      wird nur verwendet, wenn <valid_e/> angegeben wurde.
+
+

@@ -1,0 +1,24 @@
+
+Verwendete Validatoren
+
+
+schulv::student
+===============
+   Attribute: policy, onsuccess
+
+   Ueberpruefung, ob Daten eines Schuelers in Ordnung sind
+
+   policy=create
+		ueberprueft die Daten Vorname und Nachname daraufhin, ob bereits ein
+        Datensatz in der DB vorhanden ist, und falls ja, wird gefragt, ob wirklich
+        ein neuer Datensatz angelegt werden soll
+
+   policy=finish
+        ueberprueft alle (angegebenen) Daten eines Schuelerdatensatz auf Plausibilitaet
+        und generiert einen entsprechenden Datensatz, wenn alles OK ist.
+		Wenn der Datensatz erfolgreich angelegt werden kann, wird zur
+        "onsuccess"-URL gesprungen...
+
+
+
+

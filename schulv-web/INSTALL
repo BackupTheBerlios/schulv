@@ -1,0 +1,82 @@
+
+
+Was wird gebraucht?
+
+Vorausgesetzt wird ein installierter Apache-Webserver.
+
+Fuer schulv wird darueber hinaus folgendes benoetigt:
+
+* OpenLDAP 2.x
+* PHP 4.1.1. in einer modifizierten Version
+* Sablotron XSLT v0.82
+* libxml2 2.4.14
+
+
+OpenLDAP 2.x
+============
+
+die Einrichtung von OpenLDAP wird an anderer Stelle beschrieben.
+
+
+
+Sablotron XSLT
+==============
+
+gibts unter http://www.gingerall.com/
+
+
+
+
+PHP 4.1.1
+=========
+
+daher muss PHP 4.1.1. von den Quellen installiert werden.
+Die Modifikationen werden aus 2 Patches eingespielt. Diese Patches sind 
+
+   http://www.azzit.de/patches/php4/php-4.1.1-domxml-3.diff
+   http://www.azzit.de/patches/php4/php-4.1.1-request_handler-20020211-1.diff
+
+(Informationen, was diese Patches tun, findet man in den READMEs unter
+ http://www.azzit.de/patches/php4)
+
+[Kurzinformation, wie man Patches einspielt, findet man z.B. unter
+ http://www.mysql.com/doc/A/p/Applying_patches.html ]
+
+
+Mein PHP configure Kommando sieht so aus (die gd, png, jpeg, zlib, ttf Teile
+sind wahrscheinlich nebensaechlich). Die Pfadangaben muessen ggf. angepasst
+werden.
+
+,----->
+| './configure' \
+| '--prefix=/usr/local/php-4.1.1' \
+| '--enable-debug' \
+| '--with-apxs=/usr/local/apache/bin/apxs' \
+| '--with-png-dir=/usr/local' \
+| '--with-jpeg=/usr/local' \
+| '--with-gd' \
+| '--with-zlib-dir=/usr' \
+| '--with-ttf' \
+| '--with-dom=/usr/local/' \
+| '--enable-xslt' \
+| '--with-xslt-sablot' \
+| '--with-curl' \
+| '--with-ldap=/opt/openldap' \
+| '--enable-session' \
+| "$@"
+`-------------->
+
+Sobald eine solche PHP-Version laeuft (unverzichtbar sind die beiden
+Patches!!), gehts an weitere Konfigurieren:
+
+1) schulv muss im Apache sein eigenes DocumentRoot bekommen! (siehe Apache
+      Manual)
+2) der RequestHandler fuer schulv muss eingestellt werden:
+
+   In <VirtualHost> (oder die passende .htaccess) muss folgendes aufgenommen
+   werden:
+
+     php_value request_handler /$PATH_TO_SCHULV_DOCROOT/system/handler.php
+
+
+

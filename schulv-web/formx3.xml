@@ -1,0 +1,21 @@
+
+<html>
+<body bgcolor="#ffffff">
+
+<formx_page action="index.php" mode="create">
+  <input type="radio" name="radblu" value="foo"/>
+  <input type="radio" name="radblu" value="bar"/>
+
+  <input type="checkbox" name="blu[]" value="foo"/>
+  <input type="checkbox" name="blu[]" value="bar"/>
+
+  <input type="textarea" name="blarg" cols="34" rows="43">
+	<value>sf</value>
+  </input>
+
+  <input type="submit" name="test"/>
+</formx_page>
+
+</body>
+</html>
+

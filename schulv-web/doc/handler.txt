@@ -1,0 +1,22 @@
+
+wie laeuft ein request ab?
+
+
+jeder request dieses projektes wird vom request_handler system/handler.php behandelt.
+beim request auf ein verzeichnis wird manuell nach einer index.* datei gesucht.
+derzeit werden die endungen .php, .xml, .html (in dieser reihenfolge) ueberprueft.
+wird keine seite gefunden, gibts eine selbstgebaute 404 meldung.
+
+falls eine index.php oder index.html gefunden werden, springt das xml-system
+nicht an. die ziel-datei wird einfach nur per php included().
+
+wird index.xml datei gefunden springt das system wie folgt an.
+es wird ueberprueft, ob es im gleichen verzeichnis eine gleichnamige datei mit
+der endung .xsl gibt. falls ja, wird der durch das xml-system erzeugte output
+zusaetzlich nocheinmal mit diesem xsl:stylesheet transformiert.
+
+
+
+wer mehr wissen will, lese bitte handler.php und functions.inc.
+
+

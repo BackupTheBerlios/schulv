@@ -1,0 +1,7 @@
+
+<schulv>
+
+<loop datasource="schulv::student::liste" template="overview"/>
+
+</schulv>
+

@@ -1,0 +1,6 @@
+
+
+<formx_page action="index.php" mode="create">
+  <input type="text" name="blu"/>
+</formx_page>
+

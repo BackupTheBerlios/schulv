@@ -1,0 +1,2 @@
+php_value request_handler /home/azzit/public_html/schulv/system/handler.php
+

@@ -1,0 +1,71 @@
+<html>
+<body bgcolor="#ffffff">
+
+<h3>Edit Student</h3>
+
+<table width="600">
+
+<formx_page type="form">
+<importer name="schulv::student"/>
+<validator name="schulv::student" policy="finish"/>
+<storage name="schulv::student" policy="finish" mode="modify" onsuccess="/"/>
+
+<input type="hidden" name="action" value="edit_student"/>
+
+<tr>
+  <td>Vorname:</td>
+  <td><input type="text" name="vorname">
+	<valid_e>Bitte entfernen Sie die Sonderzeichen aus dem Vornamen.</valid_e>
+	<valid_regex>^[A-Za-z0-9.-]+$</valid_regex>
+	<minlength>1</minlength>
+	<length_e>Bitte geben Sie den Vornamen an.</length_e>
+  </input>
+  </td>
+</tr>
+
+<tr>
+  <td>Nachname:</td>
+  <td> <input type="text" name="nachname" value="blarg">
+	<valid_e>Bitte geben Sie den Nachnamen an.</valid_e>
+	<valid_regex>^[A-Za-z0-9.-]+$</valid_regex>
+  </input>
+  </td>
+</tr>
+
+<tr>
+  <td>Geschlecht</td>
+  <td> <input type="radio" name="geschlecht" value="maennlich"/> maennlich
+       <input type="radio" name="geschlecht" value="weiblich"/> weiblich
+  </td>
+</tr>
+
+<tr>
+  <td>Geburtsdatum<br/>
+      (DD.MM.JJJJ)</td>
+  <td> <input type="text" name="geburtsdatum">
+         <valid_e>Bitte geben Sie das Geburtsdatum ein (DD.MM.YYYY)</valid_e>
+         <valid_regex>^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$</valid_regex>
+       </input>
+  </td>
+</tr>
+
+<tr>
+  <td>Anschrift</td>
+  <td> <input type="textarea" name="adresse" rows="5" cols="40"/> </td>
+</tr>
+
+<tr>
+  <td>Telefonnummer</td>
+  <td> <input type="text" name="telefonnummer"/></td>
+</tr>
+
+<tr><td> <input type="submit" name="submit" value="abschicken"/> </td></tr>
+
+</formx_page>
+
+</table>
+
+</body>
+</html>
+
+

@@ -1,0 +1,31 @@
+<html schrentz="wop">
+		<head>
+				<title>titelleiste</title>
+		</head>
+		<body bgcolor="#bfbfbf" text="#000000">
+		<formx_page action="index.php" mode="create">
+		<mark name="opfer"/>
+				<next_page>
+						<zif field="bla" value="ble" next="index.php"/>
+						<zif field="bla" value="bla" next="bla.php"/>
+						<zif field="opfer" value="heh" next="bla.php"/>
+				</next_page>
+				<input type="text" name="bla" valid_regex="^[a-z]*$">
+						<pass/>
+						<size>50</size>
+						<multiple>1</multiple>
+				</input>
+				<input type="submit" name="opfer">
+					<src>http://www.edeal.de/edeal.gif</src>
+				</input>	
+				<input type="checkbox">
+						<checked/>
+				</input>
+				<p>was geht ab?</p>
+				<font face="courier">h4x0r
+						<b>l33t one</b>
+				</font><br/>
+				hehehehehehheee
+		</formx_page>
+		</body>
+</html>
