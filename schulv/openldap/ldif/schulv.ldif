@@ -24,6 +24,12 @@ sn: schroeder
 cn: lukas schroeder
 userPassword: secret
 
+dn: cn=admin information, o=schule.edeal.de
+objectclass: top
+objectclass: schulvAdministration
+cn: admin information
+schulvLastuid: 0
+
 dn: uid=interface, ou=users, o=schule.edeal.de
 objectclass: top
 objectclass: person
@@ -33,5 +39,4 @@ sn: interface
 cn: interface
 userPassword: interface
 description: user for the interface to authenticate as
-
 
