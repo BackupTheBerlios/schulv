@@ -1,4 +1,5 @@
 ID (Schlüssel)
+Login - menschenfreundliches Login bereitstellen oder ID nutzen
 Nachname
 Vorname
 
@@ -25,6 +26,7 @@ Telefon tagsüber 2
 Schuleintritts-Datum
 voraussichtlicher Schulabschluss
 
+wohl gut wäre es als multi-value Eintrag mit Objekten Bildungsweg, oder eben so:
 Grundschule
 1. weiterführende Schule
 2. weiterführende Schule
