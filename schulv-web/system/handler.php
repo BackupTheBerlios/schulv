@@ -3,20 +3,20 @@
 error_reporting(E_ALL);
 
 require_once("LDAP/LDAP.php");
-require_once("core/functions.inc");
+require_once("c0re/functions.inc");
 
 require_once('schulv/schulv.php');
 
 session_start();
 
 /* find our current location (this handler is "system/handler.php"): */
-if (!ereg("/system/handler.php$", $PATH_TRANSLATED)) {
+if (!ereg("/system/handler.php$", $SCRIPT_FILENAME)) {
 	die('Cannot determine my document root directory!');
 }
-$SCHULV_ROOT = ereg_replace("/system/handler.php$", "", $PATH_TRANSLATED);
+$SCHULV_ROOT = ereg_replace("/system/handler.php$", "", $SCRIPT_FILENAME);
 
 
-$file = $SCHULV_ROOT."/".$PHP_SELF;
+$file = $SCHULV_ROOT."/".$_SERVER['PHP_SELF'];
 if (is_dir($file)) {
 	$search = array("/index.php", "/index.xml", "/index.html");
 	$found = false;
@@ -38,11 +38,17 @@ if (is_dir($file)) {
 
 }
 
-if (ereg("\.xml$", $PHP_SELF)) {
+if (ereg("\.xml$", $_SERVER['PHP_SELF'])) {
 	$xslfile = ereg_replace("\.xml$", ".xsl", $file);
 	if (file_exists($xslfile))
 		core_use_xsl($xslfile);
 	print core_execute($file);
+}
+else if (!file_exists($file)) {
+       header("HTTP/1.0 404 File not found");
+       echo "<h2>404 File not found</h2>";
+       echo "The file ".$_SERVER["PHP_SELF"]." was not found on this server";
+       exit();
 }
 else {
   include($file);

@@ -1,0 +1,771 @@
+<?php
+/* 
+ * Copyright (C) 2002 edeal Schroeder & Maihoefer GbR
+ * <code@edeal.de>, http://edeal.de/
+ *
+ * This file is subject to the GNU Lesser General Public License version 2.1;
+ * see the LICENSE file for a copy of this license.
+ */
+
+require_once("formx/formx.config");
+require_once("formx/it_element.inc");
+require_once("formx/validator.class");
+
+$module = new formx;
+$module->register();
+unset($module);
+
+
+class FormXData {
+	var $options;
+	var $next_pages;
+	var $input_type;
+	var $input_node;
+
+	var $elements;
+	var $submits;
+	var $lookup_table;
+	var $importer;
+	var $validators;
+	var $storage;
+
+	function FormXData() {
+		$this->options = array();
+		$this->elements = array();
+		$this->submits = array();
+		$this->lookup_table = array();
+		$this->validators = array();
+		$this->importer = null;
+		$this->storage = null;
+	}
+
+	function set_option($key, $value) {
+		$this->options[$key] = $value;
+	}
+
+	function get_option($key, $default = false) {
+		if (array_key_exists($key, $this->options))
+			return $this->options[$key];
+		return $default;
+	}
+
+	function add_validator($va) {
+		$this->validators[] = $va;
+	}
+
+	function set_importer($va) {
+		if (is_array($this->importer))
+			user_error("There already is an import handler registered!");
+		$this->importer = $va;
+	}
+
+	function set_storage($va) {
+		if (is_array($this->storage))
+			user_error("There already is a storage handler registered!");
+		$this->storage = $va;
+	}
+
+	function add_element($el) {
+		$this->elements[] = $el;
+
+		/* for faster lookup in is_submitted(), we build a list of possible submit buttons */
+		if ($el['type'] == "submit" || $el['type'] == "image")
+			$this->submits[] = sizeof($this->elements)-1;
+
+		/* for faster lookup_by_name we store the indizes into by-name hash too */
+		$this->lookup_table[$el['name']] = sizeof($this->elements)-1;
+	}
+
+	function get($key, $default = false) {
+		if (array_key_exists($key, $this->lookup_table))
+			if (array_key_exists('value', $this->elements[$this->lookup_table[$key]]))
+				return $this->elements[$this->lookup_table[$key]]['value'];
+		return $default;
+	}
+
+	function is_submitted() {
+		foreach($this->submits as $sb) {
+			$value = array_key_exists('value',$this->elements[$sb]) ? $this->elements[$sb]['value'] : "";
+			$name0 = $this->elements[$sb]['name'];
+			$name1 = $this->elements[$sb]['name']."_x";
+			if (array_key_exists($name0, $_REQUEST) && 
+				(!strlen($value) || $_REQUEST[$name0] == $value)) {
+				return true;
+			}
+			else if (array_key_exists($name1, $_REQUEST))
+				return true;
+		}
+		return false;
+	}
+
+	function load() {
+		for ($index = 0; $index < sizeof($this->elements); $index++) {
+			$el =& $this->elements[$index];
+			$classname = sprintf("it_%s", $el['type']);
+			if (class_exists($classname)) {
+				$h = new $classname($el);
+				$h->load();
+			}
+			else echo "[FormX::load] unhandled inputtype: $classname<br>\n";
+		}
+	}
+
+	function import() {
+		$result = false;
+		if (is_array($this->importer)) {
+			$va = $this->importer;
+			if (!($cn = FormXHelper::get_validator($va['name'])))
+				return false;
+
+			if (($chk = FormXHelper::retrieve_value('__formx_import'))) {
+				if ($chk === $cn)
+					return false;
+				FormXHelper::store_value('__formx_import', $cn);
+			}
+
+			$h = new $cn($this, $va);
+			$result = $h->import();
+		}
+
+		return $result;
+	}
+
+	function validate() {
+		$result = true;
+
+		/* step 1: check whether the syntax is ok */
+		for ($index = 0; $index < sizeof($this->elements); $index++) {
+			$el =& $this->elements[$index];
+			$classname = sprintf("it_%s", $el['type']);
+			if (class_exists($classname)) {
+				$h = new $classname(&$el);
+				if (!$h->validate()) {
+					$result = false;
+				}
+			}
+			else user_error("[FormX::validate] unhandled inputtype: $classname");
+		}
+
+		/* step 2: check what the validators have to say */
+		if ($result && sizeof($this->validators) > 0) {
+			for ($index = 0; $result && $index < sizeof($this->validators); $index++) {
+				$va = $this->validators[$index];
+				if (!($cn = FormXHelper::get_validator($va['name'])))
+					continue;
+
+				$h = new $cn($this, $va);
+				$result = $h->validate();
+			}
+		}
+		return $result;
+	}
+
+	function show() {
+		for ($index = 0; $index < sizeof($this->elements); $index++) {
+			$el =& $this->elements[$index];
+			$classname = sprintf("it_%s", $el['type']);
+			if (class_exists($classname)) {
+				$h = new $classname($el);
+				$h->show();
+			}
+			else user_error("[FormX::show] unhandled inputtype: $classname");
+		}
+	}
+
+	function store() {
+		for ($index = 0; $index < sizeof($this->elements); $index++) {
+			$el =& $this->elements[$index];
+			$classname = sprintf("it_%s", $el['type']);
+			if (class_exists($classname)) {
+				$h = new $classname($el);
+				$h->store();
+			}
+			else user_error("[FormX::store] unhandled inputtype: $classname");
+		}
+
+		$result = true;
+		if ($this->storage) {
+			$va = $this->storage;
+			if (!($cn = FormXHelper::get_validator($va['name'])))
+				continue;
+	
+			$h = new $cn($this, $va);
+			$result = $h->store();
+		}
+		return $result;
+	}
+
+};
+
+class FormXHelper {
+
+	/* {{{ storage functions
+	 * die einzigen, die wissen sollten wo und wie Session-Daten 
+	 * gespeichert werden
+	 */
+	function init($nspc, $force = false) {
+		if (!array_key_exists('__formx', $_SESSION) || !is_array($_SESSION['__formx']))
+			$_SESSION['__formx'] = array();
+		if (!array_key_exists($nspc, $_SESSION['__formx'])
+			|| !is_array($_SESSION['__formx'][$nspc]) || $force) {
+			$_SESSION['__formx'][$nspc] = array();
+		}
+	}
+
+	function check_namespace($nspc) {
+		return (array_key_exists('__formx', $_SESSION)
+				&& is_array($_SESSION['__formx'])
+				&& array_key_exists($nspc, $_SESSION['__formx'])
+				&& is_array($_SESSION['__formx'][$nspc]));
+	}
+
+	function namespace_lookup_value($nspc, $key, $default = false) {
+		if (FormXHelper::check_namespace($nspc))
+			if (array_key_exists($key, $_SESSION['__formx'][$nspc]))
+				return $_SESSION['__formx'][$nspc][$key];
+		return;
+	}
+
+	function namespace_save_value($nspc, $key, $value) {
+		FormXHelper::init($nspc);
+		$_SESSION['__formx'][$nspc][$key] = $value;
+	}
+
+	/* }}} */
+
+	function add_validator($name, $classname) {
+		global $__formx_validators;
+		$__formx_validators[$name] = $classname;
+	}
+
+	function get_validator($name) {
+		global $__formx_validators;
+		if (array_key_exists($name, $__formx_validators))
+			return $__formx_validators[$name];
+		return false;
+	}
+
+	function get_config($var, $default = false) {
+		global $__formx_config;
+		if (!is_array($__formx_config) || !array_key_exists($var, $__formx_config))
+			return $default;
+		return $__formx_config[$var];
+	}
+
+	function check_mark($mark) {
+		return FormXHelper::namespace_lookup_value('marks', $mark) === true;
+	}
+
+	function set_mark($mark) {
+		FormXHelper::namespace_save_value('marks', $mark, true);
+	}
+
+	function store_value($key, $value) {
+		FormXHelper::namespace_save_value('values', $key, $value);
+	}
+
+	function retrieve_value($key, $default = false) {
+		return FormXHelper::namespace_lookup_value('values', $key, $default);
+	}
+
+	function cleanup_values() {
+		FormXHelper::init('values', true);
+	}
+
+};
+
+class formx extends element {
+
+	var $tags;
+
+	function formx() {
+		$this->tags = array("formx_page",
+							"next_page",
+							"zif",
+							"input",
+							"depends_on",
+							"dep_error",
+							"option",
+							"add_info",
+							"show_if",
+							"equals",
+							"mark",
+							"multiple",
+							"size",
+							"pass",
+							"src",
+							"validator",
+							"storage",
+							"importer"
+						);
+
+/*
+							"maxlength",
+							"minlength",
+							"length_e",
+							"error",
+							"valid_regex",
+							"icase",
+							"checked",
+							"rows",
+							"cols",
+							"wrap"
+*/
+
+	}
+
+	function register() {
+		register_tags(get_class($this), $this->tags);
+
+		global $__formx_validators;
+		$__formx_validators = array();
+	}
+
+	function formx_page($current_node) {
+
+		global $__formx_data;
+
+		$__formx_data = new FormXData;
+
+		//print_er($_SESSION);
+
+		$attrs = $current_node->attributes;
+	
+		if(get_attribute("mode",$current_node) == "create") {
+			unset($attrs[get_attr_location("mode",$current_node)]);
+		}
+
+		if(($mark = get_attribute("needs_mark",$current_node))) {
+			if(!FormXHelper::check_mark($mark)) {
+				$redir = "Location: ". FormXHelper::get_config('first_page_of_web', "/");
+				header($redir); 
+				exit();
+			}
+		}
+		if(($next = get_attribute("next",$current_node))) {
+			$__formx_data->set_option('next', $next);
+			unset($attrs[get_attr_location("mode",$current_node)]);
+		}
+
+
+		$new_node = domxml_node("form");
+		$attr_ignore = array("next", "type", "mode");
+		foreach($attrs as $attr) {
+			if (!in_array($attr->name, $attr_ignore))
+				$new_node->set_attribute($attr->name,$attr->value);
+		}	
+		/* default request method: POST */
+		if (!array_key_exists('method', $attrs))
+			$new_node->set_attribute('method', 'POST');
+		
+		xml_translate_tree($current_node, $new_node);
+
+		if (!$__formx_data->is_submitted()) {
+			$__formx_data->import();
+		}
+
+		$__formx_data->load();
+		if ($__formx_data->is_submitted()) {
+			if ($__formx_data->validate()) {
+				/* step 3: the validators say yes, so call the storage handler now */
+				$__formx_data->store();
+
+				if (($nextpage = $__formx_data->get_option('next'))) {
+					header("Location: ".$nextpage);
+					exit();
+				}
+			}
+		}
+		$__formx_data->show();
+		return $new_node;
+	}
+	
+	function next_page($current_node,$old_childs){
+
+		return $new_node;
+	}
+	
+	function zif($current_node) {
+
+		$field = get_attribute("field",$current_node);
+		$value = get_attribute("value",$current_node);
+		$next = get_attribute("next",$current_node);
+
+		$this->next_pages[$field][$value] = $next;
+
+		return true;
+	
+	}
+
+	function validator($current_node) {
+		global $__formx_data;
+		$va = array();
+		foreach ($current_node->attributes as $attr) {
+			$va[$attr->name] = $attr->value;
+		}
+		if (!array_key_exists('name', $va))
+			return new_warning_node("Validator without \"name\" attribute found.");
+
+		if (!($cn = FormXHelper::get_validator($va['name'])))
+			return new_warning_node(sprintf("Use of unknown validator \"%s\" requested.", $va['name']));
+
+		$__formx_data->add_validator($va);
+		return true;
+	}
+
+	function storage($current_node) {
+		global $__formx_data;
+		$va = array();
+		foreach ($current_node->attributes as $attr) {
+			$va[$attr->name] = $attr->value;
+		}
+		if (!array_key_exists('name', $va))
+			return new_warning_node("Validator without \"name\" attribute found.");
+
+		if (!($cn = FormXHelper::get_validator($va['name'])))
+			return new_warning_node(sprintf("Use of unknown validator \"%s\" requested.", $va['name']));
+
+		$__formx_data->set_storage($va);
+		return true;
+	}
+
+	function importer($cur) {
+		global $__formx_data;
+		$va = array();
+		foreach ($cur->attributes as $attr) {
+			$va[$attr->name] = $attr->value;
+		}
+		if (!array_key_exists('name', $va))
+			return new_warning_node("Validator without \"name\" attribute found.");
+
+		if (!($cn = FormXHelper::get_validator($va['name'])))
+			return new_warning_node(sprintf("Use of unknown validator \"%s\" requested.", $va['name']));
+
+		$__formx_data->set_importer($va);
+		return true;
+	}
+
+	function input($current_node) {
+
+		global $__formx_data;
+		global $formx_form;
+
+		if (!($name = get_attribute("name",$current_node)))
+			return new_warning_node("kein \"name\"-Attribut zum input tag angegeben", "FormX");
+			
+		if (!($type = get_attribute("type",$current_node)))
+			return new_warning_node("kein \"type\"-Attribut zum input tag angegeben", "FormX");
+
+		$value = get_attribute("value",$current_node);
+		$attrs=$current_node->attributes;
+		
+		unset($inputnode);
+		switch($type) {
+			case "select":
+				$inputnode = domxml_node("select");
+				break;
+			case "textarea":
+				$inputnode = domxml_node("textarea");
+				unset($attrs[get_attr_location("type",$current_node)]);		
+				break;
+			case "radio":
+			case "text":
+			case "hidden":
+			case "submit":
+			case "checkbox":
+				$inputnode = domxml_node("input");
+				break;
+			default:
+				/* unbekannter typ */
+				die("Unknown type: $type");
+				/* TODO: lookup in custom-input-type db */
+				return false;
+		}
+
+		$attr_ignore = array("value", "label");
+		foreach($attrs as $attr) {
+			if (!in_array($attr->name, $attr_ignore))
+				$inputnode->set_attribute($attr->name,$attr->value);
+		}
+
+		$element = array();
+		if (is_array($current_node->attributes)) {
+			foreach($current_node->attributes as $attr){
+				$element[$attr->name] = $attr->value;
+			}
+		}
+
+		/* interpretation der kinder des input-elements, um parameter zu setzen
+		 */
+		if (get_class($current_node) == "DomElement" && is_array($current_node->children())) {
+			foreach($current_node->children() as $child) {
+				if (get_class($child) != "DomElement")
+					continue;
+
+				switch($child->tagname) {
+					/* valid options */
+					case "valid_e":
+					case "valid_regex":
+					case "minlength":
+					case "maxlength":
+					case "length_e":
+					case "icase":
+					case "checked":
+					case "rows":
+					case "cols":
+					case "wrap":
+						break;
+
+					/* context-dependent valid options */
+					case "option":
+						if ($name != "checkbox" && $name != "radio" && $name != "select")
+							continue;
+						break;
+
+					/* ignored options to prevent data corruption */
+					case "__node":
+					case "__error":
+					case "__siblings":
+					case "__loaded_value":
+					case "type":
+					case "name":
+						continue;
+						break;
+
+					/* fallback, for all invalid options */
+					default:
+						// ungueltiger kind-knoten
+						continue;
+						break;
+				}
+
+				$element[$child->tagname] = trim(get_content_string($child));
+			}
+		}
+
+		$element['__node'] = $inputnode;
+
+		unset($parent);
+		$reused_element = false;
+		if (array_key_exists($name, $__formx_data->lookup_table)) {
+			$parent =& $__formx_data->elements[$__formx_data->lookup_table[$name]];
+			$reused_element = true;
+		}
+
+		if ($reused_element) {
+			if (!array_key_exists('__siblings', $parent) || !is_array($parent['__siblings']))
+				$parent['__siblings'] = array();
+			$parent['__siblings'][] = $element;
+
+			switch($type) {
+				case "radio":
+					break;
+				case "checkbox":
+					break;
+				default:
+					break;
+			};
+		}
+
+		if (!$reused_element)
+			$__formx_data->add_element($element);
+		return $inputnode;
+	}
+
+	function depends_on($current_node,$old_childs) {
+
+		return $new_node;
+	}
+	
+	function dep_error($current_node,$old_childs){
+
+		return $new_node;
+	}
+	
+	function option($current_node,$old_childs){
+
+		if($this->current_input_type == "radio"){
+			$new_node = domxml_node("input");
+			$new_node->set_attribute("type","radio");
+			$new_node->set_attribute("name",$this->current_input_node->tagname);
+			$new_node->set_attribute(	"value",
+										get_attribute("value",$current_node));
+		}else{
+			$new_node = domxml_node("option");
+			if($label = get_attribute("label",$current_node))
+				$new_node->set_attribute("value",$label);
+			$new_node->set_content(get_attribute("value",$current_node));
+		}	
+		
+		
+		return $new_node;
+	}
+	
+	function add_info($current_node,$old_childs){
+
+		$desc = get_attribute("desc",$current_node);
+
+		$_SESSION['formx']['add_info'][$this->current_input_node->tagname] = $desc; 
+
+		return true;
+	}	
+	
+	function show_if($current_node,$old_childs){
+
+		return $new_node;
+	
+	}
+	
+	function equals($current_node,$old_childs){
+
+		return $new_node;
+	
+	}
+	
+	function mark($current_node,$old_childs){
+
+		$name = get_attribute("name",$current_node);
+
+		$_SESSION['formx']['marks'][$name] = true;
+
+		return true;
+	}	
+
+	
+
+/*
+	function add_value($current_node){		
+
+		global $formx_form;
+	
+		$value = get_content_string($current_node);
+		$formx_form->elements[$this->current_input_node->tagname][ob]->{$current_node->tagname} = $value;
+
+		return true;	
+	}
+*/
+
+	function multiple($current_node,$old_childs){
+
+		$this->add_value($current_node);
+
+		return true;
+	}
+	
+	function size($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		$content = get_content($current_node);
+		$this->current_input_node->set_attribute("size",$content[0]->content);	
+		
+		return true;
+
+	}
+
+	function pass($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		$this->current_input_node->set_attribute("type","password");	
+		
+		return true;	
+
+	}
+
+	function src($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		$content=get_content($current_node);
+		$this->current_input_node->set_attribute("type","image");	
+		$this->current_input_node->set_attribute("src",$content[0]->content);	
+		
+		return true;	
+
+	}
+
+	function maxlength($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		$content=get_content($current_node);
+		$this->current_input_node->set_attribute("maxlength",$content[0]->content);	
+		return true;	
+
+	}
+
+	function minlength($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		$content=get_content($current_node);
+		$this->current_input_node->set_attribute("minlength",$content[0]->content);	
+		return true;	
+
+	}
+
+	function length_error($current_node) {
+
+		$this->add_value($current_node);
+		return true;	
+	}
+
+	function error($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		return true;	
+
+	}
+
+	function matches($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		return true;	
+
+	}
+
+	function icase($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		return true;	
+
+	}
+
+	function checked($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		$this->current_input_node->set_attribute("checked","");	
+
+		return true;	
+
+	}
+
+	function rows($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		$content=get_content($current_node);
+		$this->current_input_node->set_attribute("rows",$content[0]->content);	
+		
+		return true;	
+
+	}
+
+	function cols($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		$content=get_content($current_node);
+		$this->current_input_node->set_attribute("cols",$content[0]->content);	
+
+		return true;	
+
+	}
+
+	function wrap($current_node,$old_childs){		
+
+		$this->add_value($current_node);
+		$content=get_content($current_node);
+		$this->current_input_node->set_attribute("wrap",$content[0]->content);	
+		
+		return true;	
+
+	}
+
+};
+	
+?>

@@ -1,0 +1,137 @@
+<?php
+/* 
+ * Copyright (C) 2002 edeal Schroeder & Maihoefer GbR
+ * <code@edeal.de>, http://edeal.de/
+ *
+ * This file is subject to the GNU Lesser General Public License version 2.1;
+ * see the LICENSE file for a copy of this license.
+ */
+
+
+require_once('control/datasource.php');
+// require_once('cms/if.php');
+
+$c = new control;
+$c->register();
+unset($c);
+
+class controlData {
+	var $ds;
+
+	function controlData($ds, $argv) {
+		$this->ds = new $ds($argv);
+	}
+
+	function init() {
+		return $this->ds->init();
+	}
+
+	function next() {
+		return $this->ds->next();
+	}
+
+	function get($key) {
+		return $this->ds->get($key);
+	}
+
+	function finish() {
+		return $this->ds->finish();
+	}
+
+	function show() {
+		return $this->ds->show();
+	}
+
+};
+
+class ControlHelper {
+
+	function add_datasource($name, $classname) {
+		global $__control_datasources;
+		$__control_datasources[$name] = $classname;
+	}
+
+	function get_datasource($name) {
+		global $__control_datasources;
+		if (array_key_exists($name, $__control_datasources))
+			return $__control_datasources[$name];
+		return false;
+	}
+
+};
+
+
+class control extends element {
+
+	function control() {
+		$this->tags = array("loop", "get_var");
+	}
+
+	function register() {
+		register_tags(get_class($this), $this->tags);
+
+		global $__control_datasources;
+		$__control_datasources = array();
+	}
+
+	function loop($current_node) {
+
+		global $__control_data;
+
+		$attrs = $current_node->attributes;
+
+		if (!($ds = get_attribute("datasource", $current_node))) {
+			user_error("&lt;loop&gt; used without specifying a datasource");
+			return false;
+		}
+
+		if (!($cn = ControlHelper::get_datasource($ds))) {
+			user_error(sprintf("Use of unknown datasource \"%s\" requested.", $ds));
+			return false;
+		}
+
+		$argv = array();
+		foreach($attrs as $a) {
+			$argv[$a->name] = $a->value;
+		}
+		$__control_data = new controlData($cn, $argv);
+
+		$parent = $__control_data->init();
+		if (!is_object($parent))
+			$parent = domxml_node("loop-result");
+
+		$nodes = array();
+		while($__control_data->next()) {
+			$node = $__control_data->show();
+			if (is_object($node))
+				$nodes[] = $node;
+		/*
+		//$parent = domxml_node("loop-container");
+		if ($current_node->has_child_nodes()) {
+				$clone = $current_node->clone_node(true);
+				$nodes[] = xml_translate_tree($clone);
+		}
+		*/
+		}
+
+		foreach($nodes as $n)
+			$parent->add_child($n);
+
+		$n = $__control_data->finish();
+		if (is_object($n))
+			$parent->add_child($n);
+		return $parent;
+	}
+
+	function get_var($current_node) {
+		if (!($name = get_attribute("name", $current_node))) {
+			return new_warning_node("get_var used without a \"name\" attribute");
+		}
+
+		global $__control_data;
+		return domxml_text_node($__control_data->get($name));
+	}
+
+};
+
+?>

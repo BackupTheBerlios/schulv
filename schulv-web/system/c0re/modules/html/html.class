@@ -1,0 +1,93 @@
+<?
+/* 
+ * Copyright (C) 2002 edeal Schroeder & Maihoefer GbR
+ * <code@edeal.de>, http://edeal.de/
+ *
+ * This file is subject to the GNU Lesser General Public License version 2.1;
+ * see the LICENSE file for a copy of this license.
+ */
+
+$module = new element;
+$module->register();
+unset($module);
+
+class element{
+	var $tags;
+
+	function element() {
+		$this->tags = array();
+	}
+
+	function dispatch($current_node) {
+		if($current_node->type == XML_ELEMENT_NODE) {
+			if(method_exists($this,$current_node->tagname)){
+				$new_node = $this->{$current_node->tagname}($current_node);
+			}else{
+				$new_node = $this->default_element($current_node);
+			}	
+		}
+		else if ($current_node->type == XML_COMMENT_NODE) {
+			$new_node = $this->default_element($current_node);
+		}
+		else {
+			print_er($current_node);
+			die("invalid node passed at ".__FILE__.":".__LINE__."\n");
+		}
+
+		return $new_node;
+	}
+
+	function default_element($current_node) {
+		$node = $current_node->clone_node(false);
+		if ($current_node->has_attributes()) {
+			foreach($current_node->attributes() as $a)
+				$node->set_attribute($a->name, $a->value);
+		}
+		xml_translate_tree($current_node, $node);
+		return $node;
+	}
+
+	function default_chardata($current_node,$old_childs){
+		die("dead function \"default chardata\" called\n");
+
+		$old_childs[sizeof($old_childs)-1]->set_content($current_node->content);
+
+		return true;
+	}		
+
+	function register(){
+		
+		$this->register_tags();
+		$this->register_datasources();
+	
+	}	
+
+	function register_tags(){
+
+		global $system_data;
+
+		if(is_array($this->tags)){
+			
+			$classname=get_class($this);
+
+			foreach($this->tags as $tag){
+				if($system_data['tags'][$tag]){
+					print "ERROR: Module $classname tried to set $tag which";
+					print "has already been claimed by";
+					print $system_data['tags'][$tag];
+				}else{
+					$system_data['tags'][$tag]=$classname;
+				}
+			}
+		}	
+		return true;
+	}
+
+	function register_datasources(){
+
+		return true;
+
+	}	
+
+}
+?>
