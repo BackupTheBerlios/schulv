@@ -11,7 +11,12 @@ Anmerkungen von Sebastian Stein <steinchen@mail.berlios.de>
 
 3) dem OpenLDAP Server sagen, diese Schemas zu verwenden; dazu ist die
 Datei "etc/openldap/slapd.conf" zu bearbeiten (z.B. am Anfang der Datei
-bzw. da, wo die anderen includes auch stehen):
+bzw. da, wo die anderen includes auch stehen). Achtung: die Include-Reihenfolge
+ist wichtig. Am besten diese beiden Includes einfach an die bisherige Liste anhaengen.
+Die benoetigten Standard-Includes sind "core.schema", "cosine.schema",
+"inetorgperson.schema", in dieser Reihenfolge. Wenn eines dieser Includes
+fehlt, bitte hinzufuegen. Wenn noch mehr Includes schon dort stehen macht das
+nichts; einfach drin lassen.
 
 include $PATHTO/etc/openldap/schema/rolodap.schema
 include $PATHTO/etc/openldap/schema/schulverwaltung.schema
@@ -113,3 +118,4 @@ angegeben wurde [Schritt 5]).
 
 und wenn auch das geklappt hat, bekommt man mit ldapsearch ein Ergebnis:
 ldapsearch -v -x -W -D "cn=manager,o=schule.edeal.de" -b "o=schule.edeal.de"
+
