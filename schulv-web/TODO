@@ -1,3 +1,7 @@
+
+$Id: TODO,v 1.2 2002/02/15 20:58:13 azzit Exp $
+
+
 dispatcher rewrite   *** DONE ***
 
 request handler rewrite  *** DONE ***
@@ -41,18 +45,20 @@ request handler rewrite  *** DONE ***
 | aber kein stress sein.
 `-----------> partly done
 
-steht der ganze kram sind noch die page types zu
-implementieren, probleme könnte da "summary"
-machen. da sollten wir uns was anderes überlegen.
+* steht der ganze kram sind noch die page types zu
+  implementieren, probleme könnte da "summary"
+  machen. da sollten wir uns was anderes überlegen.
 
+* weil jeder tag-handler seine kinder selbst in einer _translate_tree() rekursion
+  handlen muss, kann register_tags() umgebaut werden, sodass context-based
+  tag-recognition aufgebaut und damit eine "validating-xml" variante "fuer arme"
+  implementiert werden kann (dazu muss register_tags einfach nur einen stack
+  pflegen und der tag-lookup eben diesen stack top-down nach dem ersten vorkommen
+  des gesuchten namens scannen). dadurch wird auch ermoeglicht, dass 2 module das
+  gleiche tag -- je nach context -- verwenden koennen.
 
-weil jeder tag-handler seine kinder selbst in einer _translate_tree() rekursion
-handlen muss, kann register_tags() umgebaut werden, sodass context-based
-tag-recognition aufgebaut und damit eine "validating-xml" variante "fuer arme"
-implementiert werden kann (dazu muss register_tags einfach nur einen stack
-pflegen und der tag-lookup eben diesen stack top-down nach dem ersten vorkommen
-des gesuchten namens scannen). dadurch wird auch ermoeglicht, dass 2 module das
-gleiche tag -- je nach context -- verwenden koennen.
+* depends_on usw. tut noch nicht fuer abhaengigkeiten zwischen mehreren
+  formx-seiten.
 
 
 
