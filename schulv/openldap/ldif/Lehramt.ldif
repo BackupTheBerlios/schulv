@@ -1,0 +1,243 @@
+dn: kuerzel=00,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 00
+description: fuer die Primarstufe
+bereich: 1
+
+dn: kuerzel=01,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 01
+description: an der Grund- und Hauptschule (Stufenschwerpunkt I)
+bereich: 1
+
+dn: kuerzel=02,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 02
+description: an der Grund- und Hauptschule (Stufenschwerpunkt II)
+bereich: 1
+
+dn: kuerzel=03,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 03
+description: an der Volksschule
+bereich: 1
+
+dn: kuerzel=09,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 09
+description: fuer Sonderpaedagogik
+bereich: 1
+
+dn: kuerzel=10,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 10
+description: an Sonderschulen
+bereich: 1
+
+dn: kuerzel=19,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 19
+description: fuer die Sekundarstufe I und die Primarstufe
+bereich: 1
+
+dn: kuerzel=20,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 20
+description: fuer die Sekundarstufe I
+bereich: 1
+
+dn: kuerzel=21,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 21
+description: an der Realschule
+bereich: 1
+
+dn: kuerzel=24,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 24
+description: fuer die Sekundarstufe II und die Sekundarstufe I
+bereich: 1
+
+dn: kuerzel=25,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 25
+description: am Gymnasium
+bereich: 1
+
+dn: kuerzel=29,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 29
+description: fuer die Sekundarstufe II (ohne berufliche Fachrichtung)
+bereich: 1
+
+dn: kuerzel=31,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 31
+description: fuer die Sekundarstufe II und Sonderpaedagogik
+bereich: 1
+
+dn: kuerzel=30,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 30
+description: an berufsbildenden Schulen (alle Lehrer mit 2. Staatspruefung oder erworbener Anstellungsfaehigkeit)
+bereich: 1
+
+dn: kuerzel=32,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 32
+description: fuer die Sekundarstufe II (mit beruflicher Fachrichtung)
+bereich: 1
+
+dn: kuerzel=57,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 57
+description: ohne sonderpaed. Zusatzausbildung:Sozialarbeiter, Sozialpaedagoge, Jugendleiter
+bereich: 2
+
+dn: kuerzel=58,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 58
+description: ohne sonderpaed. Zusatzausbildung:Erzieher, Kindergaertnerin u.a.
+bereich: 2
+
+dn: kuerzel=59,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 59
+description: ohne sonderpaed. Zusatzausbildung:Sonstige paedagogische Unterrichtshilfe
+bereich: 2
+
+dn: kuerzel=60,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 60
+description: mit sonderpaed. Zusatzausbildung:Sozialarbeiter, Sozialpaedagoge, Jugendleiter
+bereich: 2
+
+dn: kuerzel=61,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 61
+description: mit sonderpaed. Zusatzausbildung:Erzieher, Kindergaertnerin u.a.
+bereich: 2
+
+dn: kuerzel=62,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 62
+description: mit sonderpaed. Zusatzausbildung:Sonstige paedagogische Unterrichtshilfe
+bereich: 2
+
+dn: kuerzel=51,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 51
+description: Religionslehrer/Geistlicher/Katechet
+bereich: 3
+
+dn: kuerzel=54,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 54
+description: Fachlehrer fuer Kurzschrift und Maschinenschreiben
+bereich: 3
+
+dn: kuerzel=56,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 56
+description: Schulkindergaertnerin
+bereich: 3
+
+dn: kuerzel=52,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 52
+description: Fachlehrer mit der Befaehigung fuer die Laufbahn des Werkstattlehrers
+bereich: 3
+
+dn: kuerzel=55,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 55
+description: Fachlehrer mit der Befaehigung fuer die Laufbahn des technischen Lehrers an beruflichen Schulen
+bereich: 3
+
+dn: kuerzel=40,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 40
+description: Fachhochschullehrer
+bereich: 3
+
+dn: kuerzel=53,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 53
+description: Fachlehrer
+bereich: 3
+
+dn: kuerzel=50,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 50
+description: Fachlehrer an Sonderschulen
+bereich: 3
+
+dn: kuerzel=96,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 96
+description: Lehrer, der eine Qualifikation erworben hat, die der 1. Staatspruefung entspricht (z.B. Diplom, sofern nicht Schluessel 98)
+bereich: 3
+
+dn: kuerzel=97,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 97
+description: Lehrer, der auszerhalb des Geltungsbereichs des Grundgesetzes seine Qualifikation erworben hat
+bereich: 3
+
+dn: kuerzel=98,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 98
+description: Lehramtsanwaerter/Studienreferendar
+bereich: 3
+
+dn: kuerzel=99,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 99
+description: Sonstiger Lehrer (Gymnastik-, Werk-, Hauswirtschaftslehrer, Uebungsleiter)
+bereich: 3
+
+dn: kuerzel=11,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 11
+description: fuer Sonderpaedagogik und die Primarstufe
+
+dn: kuerzel=12,ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehramt
+kuerzel: 12
+description: fuer Sonderpaedagogik und die Sekundarstufe I
+

@@ -1,0 +1,486 @@
+dn: kuerzel=AH,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: AH
+description: Arbeitslehre / Schwerpunkt Haushaltslehre
+
+dn: kuerzel=AL,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: AL
+description: Arbeitslehre
+
+dn: kuerzel=AM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: AM
+description: Arabisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=AT,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: AT
+description: Arbeitslehre / Schwerpunkt Technik
+
+dn: kuerzel=AW,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: AW
+description: Arbeitslehre / Wirtschaft
+
+dn: kuerzel=BE,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: BE
+description: Betreuung
+
+dn: kuerzel=BI,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: BI
+description: Biologie
+
+dn: kuerzel=CH,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: CH
+description: Chemie
+
+dn: kuerzel=D,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: D
+description: Deutsch
+
+dn: kuerzel=E,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: E
+description: Englisch
+
+dn: kuerzel=EK,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: EK
+description: Erdkunde
+
+dn: kuerzel=ER,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: ER
+description: Evangelische Religionslehre
+
+dn: kuerzel=F,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: F
+description: Franzoesisch
+
+dn: kuerzel=FP,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: FP
+description: Fachpraxis
+
+dn: kuerzel=G,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: G
+description: Griechisch
+
+dn: kuerzel=GE,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: GE
+description: Geschichte
+
+dn: kuerzel=GM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: GM
+description: Griechisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=GP,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: GP
+description: Geschichte / Politische Bildung
+
+dn: kuerzel=GS,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: GS
+description: Gestaltung mit Kunst und Textilgestaltung
+
+dn: kuerzel=GU,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: GU
+description: Gesamtunterricht
+
+dn: kuerzel=H,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: H
+description: Hebraeisch
+
+dn: kuerzel=HW,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: HW
+description: Hauswirtschaft (-swissenschaft)
+
+dn: kuerzel=I,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: I
+description: Italienisch
+
+dn: kuerzel=IF,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: IF
+description: Informatik (nachgewiesen durch 2. Staatspruefung, sonst siehe IK)
+
+dn: kuerzel=IM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: IM
+description: Italienisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=IR,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: IR
+description: Islamische Religionslehre
+
+dn: kuerzel=BM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: BM
+description: Bosnisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=KR,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: KR
+description: Katholische Religionslehre
+
+dn: kuerzel=KS,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: KS
+description: Kurzschrift
+
+dn: kuerzel=KU,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: KU
+description: Kunst / Werken
+
+dn: kuerzel=KW,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: KW
+description: Kunstwissenschaft
+
+dn: kuerzel=L,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: L
+description: Lateinisch
+
+dn: kuerzel=LI,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: LI
+description: Literaturwissenschaft
+
+dn: kuerzel=LN,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: LN
+description: Linguistik
+
+dn: kuerzel=M,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: M
+description: Mathematik
+
+dn: kuerzel=MS,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: MS
+description: Maschinenschreiben
+
+dn: kuerzel=MU,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: MU
+description: Musik
+
+dn: kuerzel=N,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: N
+description: Niederlaendisch
+
+dn: kuerzel=OM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: OM
+description: Portugiesisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=PA,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: PA
+description: Paedagogik
+
+dn: kuerzel=PH,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: PH
+description: Physik (Astronomie)
+
+dn: kuerzel=PK,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: PK
+description: Politik
+
+dn: kuerzel=PL,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: PL
+description: Philosophie
+
+dn: kuerzel=PM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: PM
+description: Polnisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=PS,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: PS
+description: Psychologie
+
+dn: kuerzel=R,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: R
+description: Russisch
+
+dn: kuerzel=RW,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: RW
+description: Rechtswissenschaft
+
+dn: kuerzel=S,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: S
+description: Spanisch
+
+dn: kuerzel=SE,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: SE
+description: Sozial- und Erziehungswissenschaft
+
+dn: kuerzel=SF,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: SF
+description: Sozialpflege
+
+dn: kuerzel=SM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: SM
+description: Spanisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=SN,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: SN
+description: Sonderpaedagogik
+
+dn: kuerzel=SO,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: SO
+description: Sozialpaedagogik
+
+dn: kuerzel=SU,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: SU
+description: Sachunterricht
+
+dn: kuerzel=SW,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: SW
+description: Sozialwissenschaften
+
+dn: kuerzel=SP,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: SP
+description: Sport
+
+dn: kuerzel=SR,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: SR
+description: sonstige Sprachen
+
+dn: kuerzel=TC,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: TC
+description: Technik
+
+dn: kuerzel=TE,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: TE
+description: Technologie
+
+dn: kuerzel=TM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: TM
+description: Tuerkisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=TX,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: TX
+description: Textilgestaltung
+
+dn: kuerzel=UW,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: UW
+description: Unterweisung
+
+dn: kuerzel=W,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: W
+description: Werken (Musisches)
+
+dn: kuerzel=WT,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: WT
+description: Technisches Werken
+
+dn: kuerzel=WW,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: WW
+description: Wirtschafts- und Arbeitslehre
+
+dn: kuerzel=XM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: XM
+description: sonstige Muttersprache
+
+dn: kuerzel=C,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: C
+description: Chinesisch
+
+dn: kuerzel=IK,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: IK
+description: Informatik ( nachgewiesen durch Unterrichtsgenehmigung)
+
+dn: kuerzel=K,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: K
+description: Japanisch
+
+dn: kuerzel=O,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: O
+description: Portugiesisch
+
+dn: kuerzel=T,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: T
+description: Tuerkisch
+
+dn: kuerzel=Z,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: Z
+description: Neugriechisch
+
+dn: kuerzel=CM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: CM
+description: Kroatisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=EM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: EM
+description: Serbisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=LM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: LM
+description: Albanisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=MM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: MM
+description: Makedonisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=RM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: RM
+description: Russisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=WM,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: WM
+description: Slowenisch (Muttersprachl. Unterricht)
+
+dn: kuerzel=OA,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: OA
+description: Ohne Angabe
+
+dn: kuerzel=HR,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: HR
+description: Juedische Religionslehre
+
+dn: kuerzel=OR,ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectClass: top
+objectClass: schulvLehrbefaehigung
+kuerzel: OR
+description: Griechisch-orthodoxe Religionslehre
+

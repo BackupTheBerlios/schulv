@@ -1,20 +1,44 @@
+#
+# Version: 4 vom 2002-03-07
+#
 
 dn: o=schule.edeal.de
 objectclass: top
 objectclass: schulvSchule
 o: schule.edeal.de
+schulnr: 999999
 
-dn: ou=users, o=schule.edeal.de
+dn: ou=users,o=schule.edeal.de
 objectclass: top
 objectclass: organizationalUnit
 ou: users
 
-dn: ou=students, o=schule.edeal.de
+dn: ou=students,o=schule.edeal.de
 objectclass: top
 objectclass: organizationalUnit
 ou: students
 
-dn: uid=lukas, ou=users, o=schule.edeal.de
+dn: ou=personal,o=schule.edeal.de
+objectclass: top
+objectclass: organizationalUnit
+ou: personal
+
+dn: ou=verwaltung,o=schule.edeal.de
+objectclass: top
+objectclass: organizationalUnit
+ou: verwaltung
+
+dn: ou=lehraemter,ou=verwaltung,o=schule.edeal.de
+objectclass: top
+objectclass: organizationalUnit
+ou: lehraemter
+
+dn: ou=lehrbefaehigungen,ou=verwaltung,o=schule.edeal.de
+objectclass: top
+objectclass: organizationalUnit
+ou: lehraemter
+
+dn: uid=lukas,ou=users,o=schule.edeal.de
 objectclass: top
 objectclass: person
 objectclass: schulvUser
@@ -24,13 +48,13 @@ sn: schroeder
 cn: lukas schroeder
 userPassword: secret
 
-dn: cn=admin information, o=schule.edeal.de
+dn: cn=admin information,o=schule.edeal.de
 objectclass: top
 objectclass: schulvAdministration
 cn: admin information
 schulvLastuid: 0
 
-dn: uid=interface, ou=users, o=schule.edeal.de
+dn: uid=interface,ou=users,o=schule.edeal.de
 objectclass: top
 objectclass: person
 objectclass: schulvUser
