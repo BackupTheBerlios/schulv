@@ -106,6 +106,7 @@ class schulvValidatorStudent extends FormXValidator {
 				FormXHelper::store_value('vorname', $ldap->get('givenname'));
 				FormXHelper::store_value('nachname', $ldap->get('sn'));
 				FormXHelper::store_value('geschlecht', $ldap->get('geschlecht'));
+				FormXHelper::store_value('geburtsdatum', $ldap->get('geburtsdatum'));
 				FormXHelper::store_value('adresse', $ldap->get('postaladdress'));
 				FormXHelper::store_value('telefonnummer', $ldap->get('telephonenumber'));
 
