@@ -62,7 +62,8 @@ function core_execute($file) {
 	$myXML = fread($fd, filesize($file));
 	fclose($fd);
 	$docTree = xmltree($myXML);
-	$content = xml_parse_from_array($docTree);
+	$root = $docTree->children[0];
+	$content = xml_parse_from_array($root);
 
 	global $__core_system_data;
 	if (array_key_exists('xsl_template', $__core_system_data['options'])) {
