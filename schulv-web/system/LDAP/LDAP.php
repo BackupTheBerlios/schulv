@@ -74,7 +74,7 @@ class LDAP
 		return is_resource($this->_ldap_server) && $this->_ldap_bind;
 	}
 
-    function get($key, $default = false, $delim = "") {
+    function get($key, $default = false, $delim = ",") {
         if (is_array($this->result)) {
             $r = $this->result[$this->pos];
             if (array_key_exists($key, $r)) {
