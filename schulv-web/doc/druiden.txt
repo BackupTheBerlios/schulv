@@ -1,0 +1,102 @@
+
+Last Modified: 2002-02-19
+
+
+
+Inhalt:
+   Was sind Druiden?
+   Welche API fuer Druiden gibts?
+   Welche Druiden sind schon vorhanden?
+
+
+Was sind Druiden?
+=================
+
+Ein Druide ist die Schnittstelle zwischen Datenbank und Applikation. Jeder zu
+verwaltenden Entitaet wird ein Druide zugewiesen, der weiss, wie man die
+Attribute aus der Datenbank holt, wieder wegschreibt und welche Werte gueltig
+bzw.  ungueltig sind.
+Im Code ist jeder Druid in einer Klasse gekapselt. Fuer die Benutzung wird
+jeder solchen Druidklasse ein Alias zugewiesen.
+
+Die bisherige Namenskonvention fuer Druids lautet "<system>::<entity>"; z.B.
+ist der Druid "schulv::student" fuer die Verwaltung von Schuelerdaten in SchulV
+zustaendig...
+
+
+
+Welche API fuer Druiden gibts?
+==============================
+
+In Java koennte man sagen, dass ein Druide mehrere Interfaces implementiert.
+In PHP4 gibts soetwas wie Mehrfach[vererbung|implementierung] jedoch nicht,
+sodass das etwas magischer ablaeuft. Ein Druide ist daher nur eine mehr oder
+weniger willkuerliche Sammlung von Methoden, die scheinbar sinnlos rumliegen;
+dazu spaeter mehr.
+
+Damit ein Druide benutzt werden kann, muss ein Alias angelegt werden. Nur ein
+solches Alias kann in XML-Inputfiles verwendet werden (fuer die
+Namenskonvention siehe oben).
+
+Um in einem Modul einen Druiden zu benutzen, muss eine Methode des Druiden mit
+diversen Parametern aufgerufen werden koennen.
+
+Um diese Anforderungen zu erfuellen, gibt es zwei Funktionen:
+
+boolean core_register_druid(string $alias, string $classname)
+
+   registiert das Alias $alias fuer den Druiden mit dem Klassennamen $classname
+
+
+boolean core_invoke_druid(string $druid, string $method, array $argv)
+
+   ruft die Methode $method vom Druiden $druid auf. $druid enthaelt das Alias.
+   $argv ist ein Hash, dass die Parameter fuer den Methodenaufruf enthaelt.
+
+
+Einige Methoden von Druiden sind schon definiert:
+
+ "import"
+	 <cms:import/> verwendet die Methode "import", um Daten aus der Datenbank
+     in den Speicher zu importieren
+
+ "validate"
+     <formx:validator/> verwendet die Methode "validate", um Daten im Speicher auf
+     Gueltigkeit zu ueberpruefen, bevor die Daten gespeichert werden.
+
+ "store"
+	 <formx:storage/> verwendet die Methode "store", um Daten im Speicher in
+     die Datenbank zu schreiben.
+
+
+
+Vorhandene Druiden
+==================
+(siehe <cms:import/> und <formx:validator/>, <formx:storage/>)
+
+
+schulv::student
+===============
+   Attribute: policy, onsuccess
+
+   Verwalten der Daten eines Schuelers
+
+   Implementierte Methoden:
+      import, validate, store
+
+
+   policy=create
+		ueberprueft die Daten Vorname und Nachname daraufhin, ob bereits ein
+        Datensatz in der DB vorhanden ist, und falls ja, wird gefragt, ob wirklich
+        ein neuer Datensatz angelegt werden soll
+        (jedenfalls soll das mal so sein; das ist noch nicht implementiert ;)
+
+   policy=finish
+        ueberprueft alle (angegebenen) Daten eines Schuelerdatensatz auf Plausibilitaet
+        und generiert einen entsprechenden Datensatz, wenn alles OK ist.
+        (jedenfalls soll das mal so sein; das ist noch nicht implementiert ;)
+		Wenn der Datensatz erfolgreich angelegt werden kann, wird zur
+        "onsuccess"-URL gesprungen...
+        (das ist auch schon so!)
+
+

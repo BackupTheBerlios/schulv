@@ -64,17 +64,69 @@ class ControlHelper {
 class control extends element {
 
 	function control() {
-		$this->tags = array("loop", "get_var");
+		$this->tags = array(
+						"loop",
+						"get_var"
+					);
 	}
 
 	function register() {
-		register_tags(get_class($this), $this->tags);
+		core_add_finish_handler(get_class($this));
+		core_register_namespace('cms', get_class($this));
+
+		//register_tags(get_class($this), $this->tags);
 
 		global $__control_datasources;
+		global $__control_values;
 		$__control_datasources = array();
+		$__control_values = array();
 	}
 
-	function loop($current_node) {
+	function namespace_handler($node) {
+		//echo sprintf("control:nspc handler() node=%s<br/>\n", $node->node_name());
+		$name = $node->node_name();
+		switch($name) {
+			case "value-of":
+				return $this->handle_value_of($node);
+				break;
+			case "data-import":
+				return $this->handle_data_import($node);
+				break;
+			case "loop":
+				return $this->handle_loop($node);
+				break;
+			case "redirect":
+				return $this->handle_redirect($node);
+				break;
+			default:
+				if (method_exists($this, $name))
+					return $this->{$name}($node);
+				break;
+		}
+		return false;
+	}
+
+	function finish_handler() {
+		global $__control_values;
+
+		foreach ($__control_values as $node) {
+			$key = get_attribute("select", $node);
+			$value = core_get_param($key);
+
+			/* if there is no such parameter try to use the default value if specified */
+			if ($value === false && $node->has_child_nodes())
+				$value = $node->get_content();
+
+			if ($value) {
+				$text = domxml_text_node($value);
+				$node->replace_node($text);
+			}
+			else
+				$node->unlink();
+		}
+	}
+
+	function handle_loop($current_node) {
 
 		global $__control_data;
 
@@ -105,11 +157,13 @@ class control extends element {
 			$node = $__control_data->show();
 			if (is_object($node))
 				$nodes[] = $node;
-		/*
-		//$parent = domxml_node("loop-container");
-		if ($current_node->has_child_nodes()) {
-				$clone = $current_node->clone_node(true);
-				$nodes[] = xml_translate_tree($clone);
+			/*
+				//$parent = domxml_node("loop-container");
+				if ($current_node->has_child_nodes()) {
+						$clone = $current_node->clone_node(true);
+						$nodes[] = xml_translate_tree($clone);
+				}
+			*/
 		}
 		*/
 		}
@@ -132,6 +186,51 @@ class control extends element {
 		return domxml_text_node($__control_data->get($name));
 	}
 
+	function handle_value_of($node) {
+		if (!($key = get_attribute("select", $node))) {
+			return new_warning_node("value-of used without a \"select\" attributes");
+		}
+
+		global $__control_values;
+		$clone = $node->clone_node(true);
+		$__control_values[] = $clone;
+		return $clone;
+	}
+
+	function handle_data_import($node) {
+		$druid = get_attribute('druid', $node);
+		$clear = get_attribute('clear', $node);
+
+		if (!is_string($druid) && !is_string($clear)) {
+			user_error("cms:import used without mandatory \"druid\" or \"clear\" attribute");
+			return false;
+		}
+
+		$argv = array();
+		$attrs = $node->attributes();
+		foreach ($attrs as $a) {
+			$argv[$a->name] = $a->value;
+		}
+
+		if (is_string($clear))
+			core_kill_prefix($clear);
+
+		if (is_string($druid))
+			return core_invoke_druid($druid, 'import', $argv);
+		return false;
+	}
+
+	function handle_redirect($node) {
+		if (!($href = get_attribute('href', $node))) {
+			user_error("cms:redirect used without mandatory \"href\" attribute");
+			return false;
+		}
+
+		$href = core_href_sprintf($href);
+		header("Location: $href");
+		exit();
+		return false;
+	}
 };
 
 ?>

@@ -1,0 +1,52 @@
+
+<schulv xmlns:cms="http://xml.edeal.de/cms/Format"
+	xmlns:formx="http://xml.edeal.de/formx/Format">
+
+<locationbar>
+  <location href="/">Home</location>
+  <location href="/student">Schuelerverwaltung</location>
+  <location>Schueler anzeigen</location>
+</locationbar>
+
+
+<cms:data-import druid="schulv::student"/>
+
+<h3>Show Student</h3>
+
+<table width="200">
+
+<tr>
+  <td>Vorname:</td>
+  <td><cms:value-of select="vorname"/></td>
+</tr>
+
+<tr>
+  <td>Nachname:</td>
+  <td><cms:value-of select="nachname"/></td>
+</tr>
+
+<tr>
+  <td>Geschlecht</td>
+  <td><cms:value-of select="geschlecht"/></td>
+</tr>
+
+<tr>
+  <td>Geburtsdatum</td>
+  <td><cms:value-of select="geburtsdatum"/></td>
+</tr>
+
+<tr>
+  <td>Adresse</td>
+  <td><pre><cms:value-of select="adresse"/></pre></td>
+</tr>
+
+<tr>
+  <td>Telefonnummer</td>
+  <td><cms:value-of select="telefonnummer"/></td>
+</tr>
+
+</table>
+<br/>
+
+</schulv>
+

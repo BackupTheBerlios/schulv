@@ -74,14 +74,15 @@ class LDAP
 		return is_resource($this->_ldap_server) && $this->_ldap_bind;
 	}
 
-    function get($key, $default = false) {
+    function get($key, $default = false, $delim = "") {
         if (is_array($this->result)) {
             $r = $this->result[$this->pos];
             if (array_key_exists($key, $r)) {
                 if (is_array($r[$key])) {
-                    $value = "";
+                    $data = array();
                     for ($i = 0; $i < $r[$key]['count']; $i++)
-                        $value .= $r[$key][$i];
+                        $data[] = $r[$key][$i];
+					$value = join($delim, $data);
                 }
                 else
                     $value = $r[$key];

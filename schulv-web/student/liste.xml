@@ -1,7 +1,14 @@
 
-<schulv>
+<schulv xmlns:cms="http://xml.edeal.de/cms/Format">
 
-<loop datasource="schulv::student::liste" template="overview"/>
+<locationbar>
+  <location href="/">Home</location>
+  <location href="/student">Schuelerverwaltung</location>
+  <location>Schuelerliste</location>
+</locationbar>
+
+
+<cms:loop datasource="schulv::student::liste" template="overview"/>
 
 </schulv>
 

@@ -5,7 +5,7 @@ require_once("config.php");
 require_once("ldap/Lehrer.php");
 
 require_once("student/LDAP_Student.php");
-require_once('student/validator.php');
+require_once('student/druid.php');
 require_once('student/datasource.php');
 
 

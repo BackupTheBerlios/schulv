@@ -1,0 +1,9 @@
+<schulv xmlns:cms="http://xml.edeal.de/cms/Format"
+	xmlns:formx="http://xml.edeal.de/formx/Format">
+
+<cms:data-import clear=""/>
+<formx:cleanup values="" marks=""/>
+
+<cms:redirect href="/student/create.xml" />
+
+</schulv>

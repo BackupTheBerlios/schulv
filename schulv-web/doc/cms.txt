@@ -1,0 +1,36 @@
+
+
+Control
+===============
+  xml-namespace: cms
+
+Das Control Modul verwaltet das xml-Namespace "cms" und bietet die Ausfuehrung
+von Kontrollstrukturen wie z.B. Bedingungen und Schleifen an.
+
+Derzeit gibts folgende Elemente:
+
+<cms:import druid=""/>
+   ruft die Methode "import" des angegebenen Druiden auf, um Daten aus der
+   Datenbank zu importieren (siehe <cms:value-of/>).
+
+   Mit dem optionalen Attribut "prefix" kann man einen alternativen Namensraum
+   fuer die importierten Daten angeben (siehe <formx:form/>).
+
+
+<cms:loop datasource="" template=""/>
+   Unter Verwendung einer Datasource wird eine Schleife durchlaufen. Die
+   Datasource gibt an, welche Daten ausgegeben werden, und wann der Durchlauf
+   zu ende ist.
+
+   Die Attribute "datasource" und "template" muessen angegeben werden.
+   Im Moment ist die Benutzung von <cms:loop/> sehr seltsam, daher gehe ich in
+   dieser Doku nicht weiter darauf ein (read the source ;)
+
+
+<cms:value-of select=""/>
+   Wird ersetzt, durch den Wert des mit select= spezifizierten Konstrukts.
+   Derzeit koennen nur Variablen angezeigt werden, die z.B. mit <cms:import/>
+   importiert wurden.
+
+
+

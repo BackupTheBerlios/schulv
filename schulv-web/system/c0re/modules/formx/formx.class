@@ -9,7 +9,6 @@
 
 require_once("formx/formx.config");
 require_once("formx/it_element.inc");
-require_once("formx/validator.class");
 
 $module = new formx;
 $module->register();
@@ -25,7 +24,6 @@ class FormXData {
 	var $elements;
 	var $submits;
 	var $lookup_table;
-	var $importer;
 	var $validators;
 	var $storage;
 
@@ -35,7 +33,6 @@ class FormXData {
 		$this->submits = array();
 		$this->lookup_table = array();
 		$this->validators = array();
-		$this->importer = null;
 		$this->storage = null;
 	}
 
@@ -51,12 +48,6 @@ class FormXData {
 
 	function add_validator($va) {
 		$this->validators[] = $va;
-	}
-
-	function set_importer($va) {
-		if (is_array($this->importer))
-			user_error("There already is an import handler registered!");
-		$this->importer = $va;
 	}
 
 	function set_storage($va) {
@@ -110,24 +101,34 @@ class FormXData {
 		}
 	}
 
-	function import() {
+	function import($prefix) {
 		$result = false;
-		if (is_array($this->importer)) {
-			$va = $this->importer;
-			if (!($cn = FormXHelper::get_validator($va['name'])))
-				return false;
 
-			if (($chk = FormXHelper::retrieve_value('__formx_import'))) {
-				if ($chk === $cn)
-					return false;
-				FormXHelper::store_value('__formx_import', $cn);
-			}
+		//echo "FormX import<br/>\n";
+		$data = core_get_params($prefix);
+		if (!is_array($data))
+			return false;
 
-			$h = new $cn($this, $va);
-			$result = $h->import();
+		reset($data);
+		while(list($k,$v) = each($data)) {
+			FormXHelper::store_value($k, $v);
 		}
 
 		return $result;
+	}
+
+	function export($prefix = false) {
+		for ($index = 0; $index < sizeof($this->elements); $index++) {
+			$el =& $this->elements[$index];
+			$classname = sprintf("it_%s", $el['type']);
+			if (class_exists($classname)) {
+				$h = new $classname($el);
+				$h->store();
+			}
+			else user_error("[FormX::store] unhandled inputtype: $classname");
+		}
+
+		FormXHelper::export_values($prefix);
 	}
 
 	function validate() {
@@ -148,14 +149,14 @@ class FormXData {
 
 		/* step 2: check what the validators have to say */
 		if ($result && sizeof($this->validators) > 0) {
+			$tmp_prefix = "__formx_validation__";
+			$this->export($tmp_prefix);
 			for ($index = 0; $result && $index < sizeof($this->validators); $index++) {
 				$va = $this->validators[$index];
-				if (!($cn = FormXHelper::get_validator($va['name'])))
-					continue;
-
-				$h = new $cn($this, $va);
-				$result = $h->validate();
+				$va['prefix'] = $tmp_prefix;
+				$result = core_invoke_druid($va['druid'], 'validate', $va);
 			}
+			core_kill_prefix($tmp_prefix);
 		}
 		return $result;
 	}
@@ -173,24 +174,16 @@ class FormXData {
 	}
 
 	function store() {
-		for ($index = 0; $index < sizeof($this->elements); $index++) {
-			$el =& $this->elements[$index];
-			$classname = sprintf("it_%s", $el['type']);
-			if (class_exists($classname)) {
-				$h = new $classname($el);
-				$h->store();
-			}
-			else user_error("[FormX::store] unhandled inputtype: $classname");
-		}
 
-		$result = true;
+		$result = false;
 		if ($this->storage) {
 			$va = $this->storage;
-			if (!($cn = FormXHelper::get_validator($va['name'])))
-				continue;
-	
-			$h = new $cn($this, $va);
-			$result = $h->store();
+
+			$tmp_prefix = "__formx_storage__";
+			$this->export($tmp_prefix);
+			$va['prefix'] = $tmp_prefix;
+			$result = core_invoke_druid($va['druid'], 'store', $va);
+			core_kill_prefix($tmp_prefix);
 		}
 		return $result;
 	}
@@ -223,7 +216,7 @@ class FormXHelper {
 		if (FormXHelper::check_namespace($nspc))
 			if (array_key_exists($key, $_SESSION['__formx'][$nspc]))
 				return $_SESSION['__formx'][$nspc][$key];
-		return;
+		return $default;
 	}
 
 	function namespace_save_value($nspc, $key, $value) {
@@ -231,19 +224,21 @@ class FormXHelper {
 		$_SESSION['__formx'][$nspc][$key] = $value;
 	}
 
+	/*
+	 * export values into the c0re global variable system
+	 */
+	function namespace_export_values($nspc, $prefix = false) {
+		if (!FormXHelper::check_namespace($nspc))
+			return;
+
+		$data = $_SESSION['__formx'][$nspc];
+		reset($data);
+		while(list($k,$v) = each($data)) {
+			core_set_param($k, $v, $prefix);
+		}
+	}
+
 	/* }}} */
-
-	function add_validator($name, $classname) {
-		global $__formx_validators;
-		$__formx_validators[$name] = $classname;
-	}
-
-	function get_validator($name) {
-		global $__formx_validators;
-		if (array_key_exists($name, $__formx_validators))
-			return $__formx_validators[$name];
-		return false;
-	}
 
 	function get_config($var, $default = false) {
 		global $__formx_config;
@@ -260,12 +255,20 @@ class FormXHelper {
 		FormXHelper::namespace_save_value('marks', $mark, true);
 	}
 
+	function cleanup_marks() {
+		FormXHelper::init('marks', true);
+	}
+
 	function store_value($key, $value) {
 		FormXHelper::namespace_save_value('values', $key, $value);
 	}
 
 	function retrieve_value($key, $default = false) {
 		return FormXHelper::namespace_lookup_value('values', $key, $default);
+	}
+
+	function export_values($prefix = false) {
+		FormXHelper::namespace_export_values('values', $prefix);
 	}
 
 	function cleanup_values() {
@@ -294,12 +297,12 @@ class formx extends element {
 							"size",
 							"pass",
 							"src",
-							"validator",
-							"storage",
-							"importer"
 						);
 
 /*
+							"validator",
+							"storage",
+
 							"maxlength",
 							"minlength",
 							"length_e",
@@ -315,21 +318,43 @@ class formx extends element {
 	}
 
 	function register() {
-		register_tags(get_class($this), $this->tags);
+		core_register_namespace('formx', get_class($this));
+
+//		register_tags(get_class($this), $this->tags);
 
 		global $__formx_validators;
 		$__formx_validators = array();
+	}
+
+	function namespace_handler($node) {
+		//echo sprintf("formx:nspc handler() node=%s<br/>\n", $node->node_name());
+		$name = $node->node_name();
+		switch($name) {
+			case "form":
+				return $this->formx_page($node);
+				break;
+			case "cleanup":
+				return $this->handle_cleanup($node);
+			default:
+				if (method_exists($this, $name))
+					return $this->{$name}($node);
+				break;
+		}
+		return false;
 	}
 
 	function formx_page($current_node) {
 
 		global $__formx_data;
 
+//		echo "formx_page()\n";
 		$__formx_data = new FormXData;
 
 		//print_er($_SESSION);
 
-		$attrs = $current_node->attributes;
+		$attrs = array();
+		if ($current_node->has_attributes())
+			$attrs = $current_node->attributes();
 	
 		if(get_attribute("mode",$current_node) == "create") {
 			unset($attrs[get_attr_location("mode",$current_node)]);
@@ -347,13 +372,19 @@ class formx extends element {
 			unset($attrs[get_attr_location("mode",$current_node)]);
 		}
 
+		$import = get_attribute("import", $current_node);
+		if (is_string($import) && strlen($import) == 0)
+			$import = true;
 
 		$new_node = domxml_node("form");
 		$attr_ignore = array("next", "type", "mode");
-		foreach($attrs as $attr) {
-			if (!in_array($attr->name, $attr_ignore))
-				$new_node->set_attribute($attr->name,$attr->value);
-		}	
+		if (is_array($attrs)) {
+			foreach($attrs as $attr) {
+				if (!in_array($attr->name, $attr_ignore))
+					$new_node->set_attribute($attr->name,$attr->value);
+			}	
+		}
+
 		/* default request method: POST */
 		if (!array_key_exists('method', $attrs))
 			$new_node->set_attribute('method', 'POST');
@@ -361,7 +392,12 @@ class formx extends element {
 		xml_translate_tree($current_node, $new_node);
 
 		if (!$__formx_data->is_submitted()) {
-			$__formx_data->import();
+			if ($import)
+				$__formx_data->import($import);
+			// TODO: there has to be a way to clean up old data when a new form is needed
+			// simply doing this does not work!
+			//else
+			//	FormXHelper::cleanup_values();
 		}
 
 		$__formx_data->load();
@@ -377,6 +413,7 @@ class formx extends element {
 			}
 		}
 		$__formx_data->show();
+		FormXHelper::export_values($import);
 		return $new_node;
 	}
 	
@@ -399,16 +436,18 @@ class formx extends element {
 
 	function validator($current_node) {
 		global $__formx_data;
+
 		$va = array();
 		foreach ($current_node->attributes as $attr) {
 			$va[$attr->name] = $attr->value;
 		}
-		if (!array_key_exists('name', $va))
-			return new_warning_node("Validator without \"name\" attribute found.");
+		if (!array_key_exists('druid', $va))
+			return new_warning_node("Validator used without \"druid\" attribute.");
 
-		if (!($cn = FormXHelper::get_validator($va['name'])))
-			return new_warning_node(sprintf("Use of unknown validator \"%s\" requested.", $va['name']));
+		$illegal = array("prefix");
+		core_warn_attributes($current_node, $illegal);
 
+//		echo "validator()\n";
 		$__formx_data->add_validator($va);
 		return true;
 	}
@@ -419,31 +458,30 @@ class formx extends element {
 		foreach ($current_node->attributes as $attr) {
 			$va[$attr->name] = $attr->value;
 		}
-		if (!array_key_exists('name', $va))
-			return new_warning_node("Validator without \"name\" attribute found.");
+		if (!array_key_exists('druid', $va))
+			return new_warning_node("Validator without \"druid\" attribute found.");
 
-		if (!($cn = FormXHelper::get_validator($va['name'])))
-			return new_warning_node(sprintf("Use of unknown validator \"%s\" requested.", $va['name']));
+		$illegal = array("prefix");
+		core_warn_attributes($current_node, $illegal);
 
 		$__formx_data->set_storage($va);
 		return true;
 	}
 
-	function importer($cur) {
+	function handle_cleanup($node) {
 		global $__formx_data;
-		$va = array();
-		foreach ($cur->attributes as $attr) {
-			$va[$attr->name] = $attr->value;
-		}
-		if (!array_key_exists('name', $va))
-			return new_warning_node("Validator without \"name\" attribute found.");
 
-		if (!($cn = FormXHelper::get_validator($va['name'])))
-			return new_warning_node(sprintf("Use of unknown validator \"%s\" requested.", $va['name']));
+		$values = get_attribute("values", $node);
+		$marks = get_attribute("marks", $node);
 
-		$__formx_data->set_importer($va);
-		return true;
+		if ($values !== false)
+			FormXHelper::cleanup_values();
+		if ($marks !== false)
+			FormXHelper::cleanup_marks();
+
+		return false;
 	}
+
 
 	function input($current_node) {
 

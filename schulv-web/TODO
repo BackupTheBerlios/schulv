@@ -1,5 +1,5 @@
 
-$Id: TODO,v 1.2 2002/02/15 20:58:13 azzit Exp $
+$Id: TODO,v 1.3 2002/02/20 20:24:10 azzit Exp $
 
 
 dispatcher rewrite   *** DONE ***
@@ -43,7 +43,7 @@ request handler rewrite  *** DONE ***
 | über den pre_dispatch und post_dispatch handler
 | die beide noch zu implementieren sind...sollte
 | aber kein stress sein.
-`-----------> partly done
+`-----------> *** DONE ***
 
 * steht der ganze kram sind noch die page types zu
   implementieren, probleme könnte da "summary"
@@ -56,12 +56,21 @@ request handler rewrite  *** DONE ***
   pflegen und der tag-lookup eben diesen stack top-down nach dem ersten vorkommen
   des gesuchten namens scannen). dadurch wird auch ermoeglicht, dass 2 module das
   gleiche tag -- je nach context -- verwenden koennen.
+[ jetzt, wo xml namespaces unterstuetzt werden, muss der ganze register_tags() kram ueberdacht werden.
+er sollte nicht vollstaendig verschwinden, aber doch weniger aufdringlich
+daherkommen, als das jetzt der fall ist ]
+
 
 * depends_on usw. tut noch nicht fuer abhaengigkeiten zwischen mehreren
   formx-seiten.
 
 
+DOKU
+====
 
+Was muss noch dokumentiert werden?
 
+<cms:redirect/>
+<formx:cleanup/>
 
 

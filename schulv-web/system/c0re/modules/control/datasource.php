@@ -17,10 +17,10 @@ class controlDatasource {
 			$this->__argv = array();
 	}
 
-	function argv($key, $default = false) {
+	function argv($key){ 
 		if (array_key_exists($key, $this->__argv))
 			return $this->__argv[$key];
-		return $default;
+		return false;
 	}
 
 	/* initialize datasource */

@@ -39,6 +39,23 @@ class LDAP_Object
 		$this->_info[$key][] = $value;
 	}
 
+	/* addMultiValue will add each element of the array $value as an attribute
+	 * of type $key. if $value is not an array, an array will be created by
+	 * splitting on \n
+	 */
+	function addMultiValue($key, $value) {
+		if (is_array($value)) {
+			foreach($value as $v) {
+				$v = trim(stripslashes($v));
+				if (strlen($v) > 0)
+					$this->addValue($key, $v);
+			}
+		}
+		else if (is_string($value) && strlen($value) > 0) {
+			$this->addMultiValue($key, split("\n", $value));
+		}
+	}
+
 	function setDN($newdn) {
 		$this->_dn = $newdn;
 	//	$this->setValue("dn", $this->_dn);

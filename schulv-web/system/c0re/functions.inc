@@ -1,4 +1,4 @@
-<?
+<?php
 /* 
  * Copyright (C) 2002 edeal Schroeder & Maihoefer GbR
  * <code@edeal.de>, http://edeal.de/
@@ -7,35 +7,47 @@
  * see the LICENSE file for a copy of this license.
  */
 
+/* {{{ system initialization */
 
-$BASE_PATH = dirname($_SERVER['SCRIPT_FILENAME']);
+function core_init_system($root) {
+	// TODO: this global stuff could and should go away
 
-// TODO: this global stuff could go away
-$__core_system_data = array();
-$__core_system_data['options'] = array();
-$__core_system_data['tags'] = array();
-$__core_system_data['dirs'] = array();
-$__core_system_data['dirs']['modules'] = $BASE_PATH."/c0re/modules";
+	global $__core_base_path;
+	global $__core_system_data;
 
+	$__core_base_path = $root;
+	
+	$__core_system_data = array();
+	$__core_system_data['options'] = array();
+	$__core_system_data['tags'] = array();
+	$__core_system_data['namespaces'] = array();
+	$__core_system_data['dirs'] = array();
+	$__core_system_data['dirs']['modules'] = $__core_base_path."/c0re/modules";
+	$__core_system_data['params'] = array();
+	$__core_system_data['druids'] = array();
+	$__core_system_data['finish-handler'] = array();
 
-$includepath = split(":", ini_get("include_path"));
-$includepath[] = $BASE_PATH;
-$includepath[] = $__core_system_data['dirs']['modules'];
-ini_set("include_path", join(":", $includepath));
+	$includepath = split(":", ini_get("include_path"));
+	$includepath[] = $__core_base_path;
+	$includepath[] = $__core_system_data['dirs']['modules'];
+	ini_set("include_path", join(":", $includepath));
+	
+	require_once('c0re/druid.php');
 
-core_load_module("html");
-core_load_module("control");
-core_load_module("formx");
+	core_load_module("html");
+	core_load_module("control");
+	core_load_module("formx");
+}
 
-
-/* core_load_module(string modulename)
-   laedt die haupt-datei eines moduls.
-   diese datei muss unter modules/<modulename>/<modulename>.class zu finden
-   sein
-
-   Achtung: da die Module innerhalb einer Funktion include'd werden, sind
-	   natuerlich die gewohnten Schritte einzuleiten, falls man globale Variablen
-       verwenden moechte
+/*
+ * core_load_module(string modulename)
+ * laedt die haupt-datei eines moduls.
+ * diese datei muss unter modules/<modulename>/<modulename>.class zu finden
+ * sein
+ *
+ * Achtung: da die Module innerhalb einer Funktion include'd werden, sind
+ *     natuerlich die gewohnten Schritte einzuleiten, falls man globale Variablen
+ *     verwenden moechte
  */
 function core_load_module($name) {
 	$dir = $GLOBALS['__core_system_data']['dirs']['modules'];
@@ -46,10 +58,50 @@ function core_load_module($name) {
 	else user_error("[core] failed to load module \"$name\" (expected it in \"$fname\")");
 }
 
+/* finish handlers are called only, and only when the stage of preparing to
+ * dump() the output dom tree is reached
+ */
+function core_add_finish_handler($classname) {
+	global $__core_system_data;
+
+	if (!in_array($classname, $__core_system_data['finish-handler']))
+		$__core_system_data['finish-handler'][] = $classname;
+}
+
+function core_register_druid($druid, $classname) {
+	global $__core_system_data;
+	if (!array_key_exists($druid, $__core_system_data['druids'])) {
+		$__core_system_data['druids'][$druid] = $classname;
+		return true;
+	}
+	return false;
+}
+
+function core_invoke_druid($druid, $method, $argv = array()) {
+	global $__core_system_data;
+	if (!array_key_exists($druid, $__core_system_data['druids'])) {
+		user_error("The druid \"$druid\" is unknown");
+		return false;
+	}
+
+	$cn = $__core_system_data['druids'][$druid];
+	$d = new $cn($argv);;
+	if (!method_exists($d, $method)) {
+		user_error("The druid \"$druid\" does not support method \"$druid\"");
+		return false;
+	}
+
+	return $d->{$method}();
+}
+
+/* }}} */
+
 function core_use_xsl($file) {
 	global $__core_system_data;
 	$__core_system_data['options']['xsl_template'] = $file;
 }
+
+/* {{{ phases of request handling */
 
 function core_execute($file) {
 	if (!file_exists($file)) {
@@ -58,6 +110,8 @@ function core_execute($file) {
 		echo "The file ".$_SERVER["PHP_SELF"]." was not found on this server";
 		exit();
 	}
+	// TODO: dump usage of "xmltree", use xmldoc() instead
+
 	$fd = fopen($file, "r");
 	$myXML = fread($fd, filesize($file));
 	fclose($fd);
@@ -68,30 +122,84 @@ function core_execute($file) {
 		echo "Refer to the error_log for details.";
 		exit();
 	}
-	$root = $docTree->children[0];
-	$content = xml_parse_from_array($root);
+	$root = $docTree;
+
+	$tree = xml_analyze($root);
 
 	global $__core_system_data;
 	if (array_key_exists('xsl_template', $__core_system_data['options'])) {
-		$xsldata = join("\n", file($__core_system_data['options']['xsl_template']));
-		$args = array("/_xml" => $content, "/_xsl" => $xsldata);
-		$xh = xslt_create();
-//		print "XSL CONTENT = --$content--\n";
-		$content = xslt_process($xh, "arg:/_xml", "arg:/_xsl", NULL, $args);
-		if (!$content) {
-			user_error("XSLT error: ".xslt_error($xh));
-		}
-		xslt_free($xh);
+
+		//$params = core_get_params();
+
+		$docsheet = xmldocfile($__core_system_data['options']['xsl_template']);
+		$sheet = domxml_xslt_stylesheet_doc($docsheet);
+		return $sheet->process($tree, array());
 	}
-	return $content;
+	return $tree;
 }
 
-function get_module_for_element($element){
+function core_do_finish() {
+	global $__core_system_data;
 
-		global $__core_system_data;	
-		if (array_key_exists($element, $__core_system_data['tags']))
-			return $__core_system_data['tags'][$element];
+	foreach ($__core_system_data['finish-handler'] as $cn) {
+		$handler = new $cn;
+		if (!method_exists($handler, "finish_handler"))
+			user_error("Class $cn is not a valid finish handler");
+		else
+			$handler->finish_handler();
+	}
+}
+
+/* }}} */
+
+/* {{{ global variable storage */
+
+function core_kill_prefix($prefix = false) {
+	global $__core_system_data;
+	if (!is_string($prefix) || !strlen($prefix))
+		$prefix = "__default";
+	$__core_system_data['params'][$prefix] = array();
+}
+
+function core_set_param($param, $value, $prefix = "__default") {
+	global $__core_system_data;
+	if (!is_string($prefix))
+		$prefix = "__default";
+	if (!array_key_exists($prefix, $__core_system_data['params']))
+		$__core_system_data['params'][$prefix] = array();
+	$__core_system_data['params'][$prefix][$param] = $value;
+}
+
+function core_get_param($param, $prefix = "__default") {
+	global $__core_system_data;
+	if (!array_key_exists($prefix, $__core_system_data['params']))
 		return false;
+	if (array_key_exists($param, $__core_system_data['params'][$prefix]))
+		return $__core_system_data['params'][$prefix][$param];
+	return false;
+}
+
+function core_get_params($prefix = "__default") {
+	global $__core_system_data;
+
+	if (!is_string($prefix))
+		$prefix = "__default";
+
+	if (!array_key_exists($prefix, $__core_system_data['params'])) {
+		return array();
+	}
+	return $__core_system_data['params'][$prefix];
+}
+
+/* }}} */
+
+function get_module_for_element($element) {
+	global $__core_system_data;	
+	if (array_key_exists($element, $__core_system_data['tags'])) {
+//		echo "Found module for $element...\n";
+		return $__core_system_data['tags'][$element];
+	}
+	return false;
 }
 
 function register_tags($classname,$tags) {
@@ -113,15 +221,51 @@ function register_tags($classname,$tags) {
 		return true;
 }
 
-function xml_parse_from_array($input_tree){
+/* {{{ xml namespaces */
+
+/*
+ * einen xml namespace registieren. ist eine classname fuer einen namespace
+ * registriert wird die methode namespace_handler() dieser klasse fuer jedes
+ * element aufgerufen, fuer das $namespace angegeben wurde. $namespace ist das im
+ * xml-dokument definierte namespace-alias, und nicht die damit verknuepfte URI!
+ */
+function core_register_namespace($namespace, $classname) {
+	global $__core_system_data;
+
+	if (!array_key_exists($namespace, $__core_system_data['namespaces']))
+		$__core_system_data['namespaces'][$namespace] = $classname;
+	else
+		user_error("Namespace $namespace already claimed by $classname.");
+}
+
+function core_unregister_namespace($namespace, $classname) {
+	global $__core_system_data;
+	if (core_get_namespace_handler($namespace) === $classname)
+		unset($__core_system_data['namespaces'][$namespace]);
+}
+
+function core_get_namespace_handler($namespace) {
+	global $__core_system_data;
+	if (!array_key_exists($namespace, $__core_system_data['namespaces']))
+		return false;
+	return $__core_system_data['namespaces'][$namespace];
+}
+
+/* }}} */
+
+/* {{{ xml input handling */
+
+function xml_analyze($input_tree) {
 
 	$tree = new_xmldoc("1.0");
 	$root = xml_translate_tree($input_tree);
-	if (is_object($root))
+	if (is_object($root)) {
 		$tree->set_root($root);
+		core_do_finish();
+	}
 	else
 		$tree->set_root(new_warning_node("Fatal. No root-node returned by xml_translate_tree()"));
-	return $tree->dumpmem();
+	return $tree;
 }
 
 function xml_translate_tree($old_tree, $parent = false)
@@ -129,27 +273,44 @@ function xml_translate_tree($old_tree, $parent = false)
   	if($old_tree->has_child_nodes()) {
     	foreach($old_tree->children() as $current_child) {
 
-			if ($current_child->type == XML_TEXT_NODE) {
+			if ($current_child->node_type() == XML_TEXT_NODE) {
 				$new_node = $current_child->clone_node();
 				if (get_class($parent) == "DomElement")
 					$new_node = $parent->add_child($new_node);
 			}
-			else if ($current_child->type == XML_ELEMENT_NODE) {
-				if($module = get_module_for_element($current_child->tagname))
-					$handler = new $module;
-				else
-					$handler = new element; /* fallback default HTML handler */
-		 
-				/* der dispatcher hat entweder eine domxml-node oder ein array von
-				   domxml-nodes zurueckzuliefern. wird ein array mit mehr als
-				   einem element zurueckgeliefert, wenn noch keine root-node gesetzt ist,
-				   wird das erste element des arrays als root-node gesetzt und
-				   alle anderen elemente werden verworfen...
-				 */
-	      		$new_node = $handler->dispatch($current_child);
+			else if ($current_child->node_type() == XML_ELEMENT_NODE) {
+
+				unset($new_node);
+				if ($current_child->prefix()) {
+					$namespace = $current_child->prefix();
+					$cn = core_get_namespace_handler($namespace);
+					if ($cn) {
+						$handler = new $cn;
+						if (!method_exists($handler, 'namespace_handler')) {
+							user_error("The namespace handler for $namespace ($cn) is incorrectly implemented");
+						}
+						else
+							$new_node = $handler->namespace_handler($current_child);
+					}
+				}
+
+				if (!isset($new_node)) {
+					if($module = get_module_for_element($current_child->tagname))
+						$handler = new $module;
+					else
+						$handler = new element; /* fallback default HTML handler */
+			 
+					/* der dispatcher hat entweder eine domxml-node oder ein array von
+					 * domxml-nodes zurueckzuliefern. wird ein array mit mehr als
+					 * einem element zurueckgeliefert, wenn noch keine root-node gesetzt ist,
+					 * wird das erste element des arrays als root-node gesetzt und
+					 * alle anderen elemente werden verworfen...
+					 */
+		      		$new_node = $handler->dispatch($current_child);
+				}
     
 				if (is_object($new_node)) {
-					switch($new_node->type) {
+					switch($new_node->node_type()) {
 						case XML_ELEMENT_NODE:
 						case XML_COMMENT_NODE:
 							if (get_class($parent) != "DomElement") {
@@ -180,8 +341,6 @@ function xml_translate_tree($old_tree, $parent = false)
 								$parent->add_child($nn);
 							}
 					}
-//					else
-//						die("Oops. Parent node badly corrupted");
 				}
 			}
     	}
@@ -190,40 +349,39 @@ function xml_translate_tree($old_tree, $parent = false)
 	return $parent;
 }
 
+/* }}} */
+
+/* {{{ xml auxiliaries */
+
 function new_warning_node($text, $system = "") {
 	$node = domxml_node("b");
 	$node->set_content(sprintf("%s Warning: %s", $system, $text));
 	return $node;
 }
 
-function which_module($tag){
-
-	global $__core_system_data;
-
-	return $__core_system_data[elements][$tag];
-}
-
 function get_attribute($key,$node){
 
-	foreach($node->attributes() as $attr){
-		if($attr->name == $key){ 
-			return $attr->value;
+	if ($node->has_attributes()) {
+		foreach($node->attributes() as $attr) {
+			if($attr->name == $key){ 
+				return $attr->value;
+			}
 		}
 	}
 
 	return false;
 }
 
-function get_content($node){
+function get_content($node) {
 
 	$content = array();
 	if($node->has_child_nodes()) {
 		foreach($node->children() as $child){
-			if ($child->type == XML_TEXT_NODE){
+			if ($child->node_type() == XML_TEXT_NODE){
 				$content[] = $child;
 			}
 		}
-	}	
+	}
 	return $content;
 }
 
@@ -246,6 +404,40 @@ function get_attr_location($key,$node){
 	return false;
 }
 
+function core_warn_attributes($node, $list) {
+	if (!is_array($list))
+		return;
+	foreach ($list as $i) {
+		if (get_attribute($i, $node)) {
+			$name = $node->node_name();
+			if ($node->prefix())
+				$name = sprintf("%s:%s", $node->prefix(), $node->node_name());
+			user_error(sprintf("Illegal attribute \"%s\" used on attribute %s", $i, $name));
+		}
+	}
+}
+
+/* }}} */
+
+/* {{{ request handling auxiliaries */
+
+function core_href_sprintf($str)
+{
+	$ret = $str;
+	$v = array();
+	while (ereg('{\$([A-Za-z_]+)}', $ret, $v)) {
+		$pat = sprintf("{\\\$%s}", $v[1]);
+		$rep = "";
+		if (array_key_exists($v[1], $_REQUEST))
+			$rep = $_REQUEST[$v[1]];
+		$ret = ereg_replace($pat, $rep, $ret);
+	}
+	return $ret;
+}
+
+/* }}} */
+
+/* debug function. pretty print variable info even with text/html */
 function print_er($a, $prefix = ""){
 
 	print "<pre>$prefix ";
@@ -253,4 +445,8 @@ function print_er($a, $prefix = ""){
 	print "</pre>\n";
 }	
 
+/*
+ * vim600: noet sw=4 ts=4 fdm=marker
+ * vim<600: noet sw=4 ts=4
+ */
 ?>

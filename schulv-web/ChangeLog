@@ -1,7 +1,19 @@
 
+2002-02-20
+   - neues tag <cms:redirect/>
+   - neues tag <cms:cleanup/>
+   - aktualisierte xml-input files
+   - erweiteres schulv stylesheet
+   - FIX: core_kill_prefix() repariert fuers default_prefix
+   - core_href_sprintf() eingebaut
+   - FIX: dn wird vom schulv::student druiden auch exportiert
+
+2002-02-18
+   - das konzept von "druids" wurde eingebaut
+   - importieren ist jetzt aufgabe des cms
+   - module registrieren jetzt namespaces und nicht mehr einzelne tags
+   - viele viele aufraeumarbeiten
 
 2002-02-12
    - initial release
-
-
 

@@ -1,0 +1,280 @@
+Index: ext/domxml/php_domxml.c
+===================================================================
+RCS file: /repository/php4/ext/domxml/php_domxml.c,v
+retrieving revision 1.116
+diff -u -r1.116 php_domxml.c
+--- ext/domxml/php_domxml.c	4 Feb 2002 21:07:39 -0000	1.116
++++ ext/domxml/php_domxml.c	14 Feb 2002 23:08:05 -0000
+@@ -203,6 +203,7 @@
+ 	PHP_FE(domxml_node_has_attributes,									NULL)
+ 	PHP_FE(domxml_node_new_child,										NULL)
+ 	PHP_FE(domxml_node,													NULL)
++	PHP_FE(domxml_text_node,											NULL)
+ 	PHP_FE(domxml_node_unlink_node,										NULL)
+ 	PHP_FE(domxml_node_set_content,										NULL)
+ 	PHP_FE(domxml_node_get_content,										NULL)
+@@ -260,6 +261,8 @@
+ 	PHP_FALIAS(create_processing_instruction,	domxml_doc_create_processing_instruction,	NULL)
+ 	PHP_FALIAS(children,				domxml_node_children,			NULL)
+ 	PHP_FALIAS(add_root,				domxml_add_root,				NULL)
++	PHP_FALIAS(set_root,				domxml_set_root,				NULL)
++	PHP_FALIAS(get_root,				domxml_get_root,				NULL)
+ 	PHP_FALIAS(imported_node,			domxml_doc_imported_node,		NULL)
+ 	PHP_FALIAS(dtd,						domxml_intdtd,					NULL)
+ 	PHP_FALIAS(dumpmem,					domxml_dump_mem,				NULL)
+@@ -718,9 +721,8 @@
+ {
+ 	zval *wrapper;
+ 
+-	if (! found) {
++	if (found)
+ 		*found = 0;
+-	}
+ 
+ 	if (!obj) {
+ 		MAKE_STD_ZVAL(wrapper);
+@@ -730,7 +732,8 @@
+ 
+ 	if ((wrapper = (zval *) xpath_object_get_data((void *) obj))) {
+ 		zval_add_ref(&wrapper);
+-		*found = 1;
++		if (found)
++			*found = 1;
+ 		return wrapper;
+ 	}
+ 
+@@ -825,9 +828,8 @@
+ 	zval *wrapper;
+ 	int rsrc_type;
+ 
+-	if (! found) {
++	if (found)
+ 		*found = 0;
+-	}
+ 
+ 	if (!obj) {
+ 		MAKE_STD_ZVAL(wrapper);
+@@ -837,7 +839,8 @@
+ 
+ 	if ((wrapper = (zval *) xpath_context_get_data((void *) obj))) {
+ 		zval_add_ref(&wrapper);
+-		*found = 1;
++		if (found)
++			*found = 1;
+ 		return wrapper;
+ 	}
+ 
+@@ -911,9 +914,8 @@
+ 	char *content;
+ 	int rsrc_type;
+ 
+-	if (! found) {
++	if (found)
+ 		*found = 0;
+-	}
+ 
+ 	if (!obj) {
+ 		MAKE_STD_ZVAL(wrapper);
+@@ -923,7 +925,8 @@
+ 
+ 	if ((wrapper = (zval *) dom_object_get_data((void *) obj))) {
+ 		zval_add_ref(&wrapper);
+-		*found = 1;
++		if (found)
++			*found = 1;
+ 		return wrapper;
+ 	}
+ 
+@@ -1417,6 +1420,28 @@
+ }
+ /* }}} */
+ 
++/* {{{ proto object domxml_text_node(string content)
++   Creates node */
++PHP_FUNCTION(domxml_text_node)
++{
++	zval *rv;
++	xmlNode *node;
++	int ret, content_len;
++	char *content;
++
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &content, &content_len)  == FAILURE) {
++		return;
++	}
++
++	node = xmlNewTextLen(content, content_len);
++	if (!node) {
++		RETURN_FALSE;
++	}
++
++	DOMXML_RET_OBJ(rv, node, &ret);
++}
++/* }}} */
++
+ /* {{{ proto object domxml_node_name(void)
+    Returns name of node */
+ PHP_FUNCTION(domxml_node_name)
+@@ -1827,19 +1852,60 @@
+ 		RETURN_FALSE;
+ 	}
+ 
++#if 0
+ 	if (NULL == (new_child = xmlCopyNode(child, 1))) {
+ 		php_error(E_WARNING, "%s(): unable to clone node", get_active_function_name(TSRMLS_C));
+ 		RETURN_FALSE;
+ 	}
++#endif
++
++	/* Note this comment from libxml2::tree.c in xmlAddChild():
++	 *
++	 * // If cur is a TEXT node, merge its content with adjacent TEXT nodes
++	 * // cur is then freed.
++	 *
++	 * (cur is our "child" variable.)
++	 * Because of this behaviour in libxml2 we have to unlink a TEXT node from
++	 * our le_domxmlnodep before performing xmlAddChild()
++	 * We get wrapper and handle in every case, b/c the TEXT node's to not have to be
++	 * coalesced, which makes the handling a bit hackish:
++	 *   - remove a text node, always, b/c we cannot use the possible free'd memory 
++	 *   - readd the node in case it has not been coalesced
++	 *
++	 * BEWARE!   the current php CVS (as of 2002-02-10) uses xmlCopyNode() as a solution.
++	 *    but this is not the best solution either, because your PHP code won't be able to
++	 *    freely store copies of a nodeID. b/c it will be rendered invalid after each use of ->add_child()
++     */
++	if (child->type == XML_TEXT_NODE) {
++		zval **handle, *wrapper;
++
++		wrapper = dom_object_get_data(child);
++		if (wrapper) {
++			if (zend_hash_index_find(Z_OBJPROP_P(wrapper), 0, (void **)&handle) == FAILURE) {
++				php_error(E_WARNING, "%s() underlying object missing", get_active_function_name(TSRMLS_C));
++			}
++			else
++				zend_list_delete(Z_LVAL_PP(handle));
++		}
++	}
++ 
+ 
+-	child = xmlAddChild(nodep, new_child);
++	new_child = xmlAddChild(nodep, child);
+ 
+ 	if (NULL == child) {
+ 		php_error(E_WARNING, "%s(): couldn't add child", get_active_function_name(TSRMLS_C));
+ 		RETURN_FALSE;
+ 	}
+ 
+-	DOMXML_RET_OBJ(rv, child, &ret);
++	/* check, if we have to readd the TEXT node to le_domxmlnodep
++	 * because it has not been coalesced and free()d.
++	 */
++	if (new_child == child && child->type == XML_TEXT_NODE) {
++		zval *wrapper;
++		wrapper = php_domobject_new(child, &ret TSRMLS_CC);
++	}
++
++	DOMXML_RET_OBJ(rv, new_child, &ret);
+ }
+ /* }}} */
+ 
+@@ -2902,6 +2968,55 @@
+ }
+ /* }}} */
+ 
++/* {{{ proto bool domxml_get_root(int domnode)
++   Gets root node of document */
++PHP_FUNCTION(domxml_get_root)
++{
++	zval *id, *rv;
++	xmlDoc *docp;
++	xmlNode *root;
++	int ret;
++
++	DOMXML_PARAM_NONE(docp, id, le_domxmldocp);
++
++	if (!root) {
++		RETURN_FALSE;
++	}
++
++	root = xmlDocGetRootElement(docp);
++	if (!root) {
++		RETURN_FALSE;
++	}
++
++	DOMXML_RET_OBJ(rv, root, &ret);
++}
++/* }}} */
++
++/* {{{ proto bool domxml_set_root(int domnode)
++   Sets root node of document */
++PHP_FUNCTION(domxml_set_root)
++{
++	zval *id, *rv, *node;
++	xmlDoc *docp;
++	xmlNode *root;
++
++	DOMXML_PARAM_TWO(docp, id, le_domxmldocp, "o", &node, &rv);
++	DOMXML_GET_OBJ(root, node, le_domxmlnodep);
++
++	if (!root) {
++		RETURN_FALSE;
++	}
++
++	xmlDocSetRootElement(docp, root);
++
++	RETURN_TRUE;
++}
++/* }}} */
++
++
++
++
++
+ /* {{{ proto object domxml_new_xmldoc(string version)
+    Creates new xmldoc */
+ PHP_FUNCTION(domxml_new_xmldoc)
+@@ -3354,9 +3469,8 @@
+ 	zval *wrapper;
+ 	int rsrc_type;
+ 
+-	if (! found) {
++	if (found)
+ 		*found = 0;
+-	}
+ 
+ 	if (!obj) {
+ 		MAKE_STD_ZVAL(wrapper);
+@@ -3366,7 +3480,8 @@
+ 
+ 	if ((wrapper = (zval *) dom_object_get_data((void *) obj))) {
+ 		zval_add_ref(&wrapper);
+-		*found = 1;
++		if (found)
++			*found = 1;
+ 		return wrapper;
+ 	}
+ 
+Index: ext/domxml/php_domxml.h
+===================================================================
+RCS file: /repository/php4/ext/domxml/php_domxml.h,v
+retrieving revision 1.41
+diff -u -r1.41 php_domxml.h
+--- ext/domxml/php_domxml.h	21 Jan 2002 23:21:32 -0000	1.41
++++ ext/domxml/php_domxml.h	14 Feb 2002 23:08:05 -0000
+@@ -78,6 +78,8 @@
+ PHP_FUNCTION(domxml_doc_create_entity_reference);
+ PHP_FUNCTION(domxml_doc_imported_node);
+ PHP_FUNCTION(domxml_add_root);
++PHP_FUNCTION(domxml_get_root);
++PHP_FUNCTION(domxml_set_root);
+ PHP_FUNCTION(domxml_intdtd);
+ PHP_FUNCTION(domxml_dump_mem);
+ PHP_FUNCTION(domxml_dump_mem_file);
+@@ -115,6 +117,7 @@
+ PHP_FUNCTION(domxml_node_parent);
+ PHP_FUNCTION(domxml_node_prefix);
+ PHP_FUNCTION(domxml_node);
++PHP_FUNCTION(domxml_text_node);
+ PHP_FUNCTION(domxml_clone_node);
+ PHP_FUNCTION(domxml_node_unlink_node);
+ PHP_FUNCTION(domxml_node_replace_node);

@@ -1,9 +1,10 @@
 
 FormX
 ===============
+  xml-namespace: formx
 
 
-<formx_page/>
+<formx:form/>
 
       leitet die verwaltung eines <form/>s durch FormX ein.
 
@@ -14,36 +15,33 @@ FormX
 		   nach dem submit sein ok gibt. dies erlaubt das verteilen der
            dateneingabe auf mehrere logische seiten.
 
+      import
+           gibts den namensraum an, aus dem die formularfelddaten importiert werden.
+		   kann leer sein, dann wird der default namensraum verwendet. wenn
+           import nicht angegeben wird, werden auch keinerlei daten importiert!
+           [siehe auch <cms:import/>!]
 
-Kinder von <formx_page/>
+
+Kinder von <formx:form/>
 ------------------------
 
-<validator name=""/>
+<formx:validator druid=""/>
 
-      setzt einen handler fuer die plausibilitaetspruefung des formular-inhalts.
-	  das attribute "name" muss angegeben werden. alle uebrigen attribute sind
+      setzt einen druid fuer die plausibilitaetspruefung des formular-inhalts.
+	  das attribute "druid" muss angegeben werden. alle uebrigen attribute sind
       abhaengig vom gewaehlten validator.
 
-<storage name=""/>
+<formx:storage name=""/>
 
-      setzt einen handler fuer die abspeicherung des formular-inhalts.
-	  das attribute "name" muss angegeben werden. alle uebrigen attribute sind
-      abhaengig vom gewaehlten handler.
-
-<importer name=""/>
-
-	  setzt einen handler fuer den datenimport des formular-inhalts (um z.B.
-      ein edit-formular mit daten aus der datenbank vorauszufuellen).
-	  das attribute "name" muss angegeben werden. alle uebrigen attribute sind
+      setzt einen druid fuer die abspeicherung des formular-inhalts.
+	  das attribute "druid" muss angegeben werden. alle uebrigen attribute sind
       abhaengig vom gewaehlten handler.
 
 
+<formx:input/>
 
-
-<input/>
-
-	  fuegt ein input-element zur liste der element hinzu. die kinder dieses
-      elementes bestimmen, wie formx die plausibiltaetspruefung macht.
+	  fuegt ein input-element zur liste der elemente hinzu. die kinder dieses
+      elementes bestimmen, wie formx die plausibiltaetspruefung macht (siehe unten).
 
       Attribute:
       type
@@ -54,28 +52,28 @@ Kinder von <formx_page/>
            bestimmt name und wert des elementes.
 
 
-Kinder von <input/>, wenn unterhalb von <formx_page/>
------------------------------------------------------
+Kinder von <formx:input/>, wenn unterhalb von <formx:form/>
+-----------------------------------------------------------
 
 einige dieser kinder machen nur bei bestimmten input-element-typen sinn.
 (z.B. minlength nicht mit radio verwenden)
 
-<length_e/>
+<formx:length_e/>
 
 	  der content dieses containers setzt die fehlermeldung, die ausgegeben
       wird, falls die mindestlaenge nicht erreicht wird
 
-<minlength/>
+<formx:minlength/>
 
       setzt die einzuhaltende mindestlaenge des contents.
       wird nur ueberprueft, wenn <length_e/> angegeben wurde.
 
-<valid_e/>
+<formx:valid_e/>
 
 	  der content dieses containers setzt die fehlermeldung, die ausgegeben
       wird, falls <valid_regex/> nicht matched.
 
-<valid_regex/>
+<formx:valid_regex/>
 
       setzt die fuer den syntax-check zu verwendende regular expression.
       wird nur verwendet, wenn <valid_e/> angegeben wurde.

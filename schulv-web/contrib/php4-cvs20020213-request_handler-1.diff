@@ -1,0 +1,93 @@
+Index: sapi/apache/mod_php4.c
+===================================================================
+RCS file: /repository/php4/sapi/apache/mod_php4.c,v
+retrieving revision 1.127
+diff -u -r1.127 mod_php4.c
+--- sapi/apache/mod_php4.c	11 Dec 2001 15:31:53 -0000	1.127
++++ sapi/apache/mod_php4.c	13 Feb 2002 11:20:58 -0000
+@@ -483,6 +483,39 @@
+ }
+ /* }}} */
+ 
++/* {{{ php_get_request_handler
++ */
++static int php_get_request_handler(request_rec *r, char **target)
++{
++	HashTable *per_dir_conf;
++	php_per_dir_entry *per_dir_entry;
++	char *filename;
++
++	if (!(per_dir_conf = get_module_config(r->per_dir_config, &php4_module)))
++		return 0;
++
++	if (zend_hash_find(per_dir_conf, "request_handler", sizeof("request_handler")-1,
++			(void **)&per_dir_entry) == SUCCESS) {
++
++		if (!ap_os_is_path_absolute(per_dir_entry->value)) {
++			char *dirnam = ap_pstrdup(r->pool, r->filename);
++			char *x = strrchr(dirnam, '/');
++
++			if (x != NULL)
++				*x = 0;
++			filename = ap_make_full_path(r->pool, dirnam, per_dir_entry->value);
++		}
++		else
++			filename = ap_pstrdup(r->pool, per_dir_entry->value);
++
++		*target = filename;
++		return 1;
++	}
++
++	return 0;
++}
++/* }}} */
++
+ /* {{{ send_php
+  */
+ static int send_php(request_rec *r, int display_source_mode, char *filename)
+@@ -502,6 +535,9 @@
+ 		return OK;
+ 	}
+ 
++	if (php_get_request_handler(r, &filename))
++		r->filename = filename;
++
+ 	zend_first_try {
+ 		/* We don't accept OPTIONS requests, but take everything else */
+ 		if (r->method_number == M_OPTIONS) {
+@@ -846,6 +882,26 @@
+ }
+ /* }}} */
+ 
++/* {{{ php_type_checker
++ */
++static int php_type_checker(request_rec *r)
++{
++	char *filename;
++	
++	/* if a request_handler has been registered, the type checker tells 
++	 * apache to invoke our send_php handler; otherwise we deny responsibility
++	 * for this request
++	 */
++	
++	if (php_get_request_handler(r, &filename)) {
++		r->handler = "application/x-httpd-php";
++		return OK;
++	}
++	
++	return DECLINED;
++}
++/* }}} */
++
+ /* {{{ handler_rec php_handlers[]
+  */
+ handler_rec php_handlers[] =
+@@ -885,7 +941,7 @@
+ 	NULL,						/* check_user_id */
+ 	NULL,						/* check auth */
+ 	NULL,						/* check access */
+-	NULL,						/* type_checker */
++	php_type_checker,			/* type_checker */
+ 	NULL,						/* fixups */
+ 	NULL						/* logger */
+ #if MODULE_MAGIC_NUMBER >= 19970103

@@ -1,40 +1,43 @@
-<html>
-<body bgcolor="#ffffff">
+<schulv xmlns:cms="http://xml.edeal.de/cms/Format"
+	xmlns:formx="http://xml.edeal.de/formx/Format">
+
+<cms:data-import clear=""/>
+
+<h2>Schueler anlegen</h2>
+
 
 <table width="600">
 
-<formx_page type="form" next="create2.xml">
-<validator name="schulv::student" policy="create"/>
+<formx:form next="create2.xml">
+<formx:validator druid="schulv::student" policy="create"/>
 
-<input type="hidden" name="action" value="add_student"/>
+<formx:input type="hidden" name="action" value="add_student"/>
 
 <tr>
   <td>Vorname:</td>
-  <td><input type="text" name="vorname">
-	<valid_e>Bitte entfernen Sie die Sonderzeichen aus dem Vornamen.</valid_e>
-	<valid_regex>^[A-Za-z0-9.-]+$</valid_regex>
-	<minlength>1</minlength>
-	<length_e>Bitte geben Sie den Vornamen an.</length_e>
-  </input>
+  <td><formx:input type="text" name="vorname">
+	<formx:valid_e>Bitte entfernen Sie die Sonderzeichen aus dem Vornamen.</formx:valid_e>
+	<formx:valid_regex>^[A-Za-z0-9.-]+$</formx:valid_regex>
+	<formx:minlength>1</formx:minlength>
+	<formx:length_e>Bitte geben Sie den Vornamen an.</formx:length_e>
+  </formx:input>
   </td>
 </tr>
 
 <tr>
   <td>Nachname:</td>
-  <td> <input type="text" name="nachname" value="blarg">
-	<valid_e>Bitte geben Sie den Nachnamen an.</valid_e>
-	<valid_regex>^[A-Za-z0-9.-]+$</valid_regex>
-  </input>
+  <td> <formx:input type="text" name="nachname">
+	<formx:valid_e>Bitte geben Sie den Nachnamen an.</formx:valid_e>
+	<formx:valid_regex>^[A-Za-z0-9.-]+$</formx:valid_regex>
+  </formx:input>
   </td>
 </tr>
 
-<tr><td> <input type="submit" name="submit" value="weiter"/> </td></tr>
+<tr><td> <formx:input type="submit" name="submit" value="weiter"/> </td></tr>
 
 
-</formx_page>
+</formx:form>
 
 </table>
 
-</body>
-</html>
-
+</schulv>
