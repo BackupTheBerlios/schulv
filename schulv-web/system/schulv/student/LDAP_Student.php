@@ -9,10 +9,10 @@
 
 require_once("LDAP/LDAP_Object.php");
 
-class Student extends LDAP_Object
+class LDAP_Student extends LDAP_Object
 {
 
-	function Student() {
+	function LDAP_Student() {
 		$this->LDAP_Object();
 	}
 
@@ -25,7 +25,7 @@ class Student extends LDAP_Object
 	function setDN($uid, $full = false) {
 		if (!$full) {
 			$uid = eregi_replace(",", " ", $uid);
-			$dn = sprintf("uid=%s,%s", $uid, Schulv::baseDN());
+			$dn = sprintf("uid=%s,ou=students,%s", $uid, SCHULV_SUFFIX);
 		}
 		else
 			$dn = $uid;
@@ -35,7 +35,7 @@ class Student extends LDAP_Object
 	function search($attribs = false) {
 		$ldap = Schulv::ldapConnect();
 		$filter = "(objectclass=schulvStudent)";
-		if ($ldap->search(Schulv::baseDN(), $filter, $attribs)) {
+		if ($ldap->search(sprintf("ou=students,%s", SCHULV_SUFFIX), $filter, $attribs)) {
 			return $ldap->result;
 		}
 		return false;

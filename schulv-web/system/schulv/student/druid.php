@@ -14,6 +14,7 @@ class schulvStudentDruid extends Druid {
 	function schulvStudentDruid($data) {
 		$this->Druid($data);
 
+		/* aufraeumen der argumentliste, damit alles was gebraucht wird, auch da ist */
 		$enforce = array("policy");
 		foreach ($enforce as $e) {
 			if (!array_key_exists($e, $this->argv))
@@ -42,12 +43,12 @@ class schulvStudentDruid extends Druid {
 				return true;
 				break;
 		}
-		echo "schulvValidatorStudent: unhandled policy \"".$this->argv['policy']."\"";
+		echo "schulvStudentDruid::validate(): unhandled policy \"".$this->argv['policy']."\"";
 		return false;
 	}
 
 	function store() {
-		$st = new Student();
+		$st = new LDAP_Student();
 
 		$info = array_keys($this->mapping);
 		$d = array();
@@ -111,7 +112,7 @@ class schulvStudentDruid extends Druid {
 
 	function import() {
 		if (array_key_exists('dn', $_REQUEST)) {
-			$st = new Student();
+			$st = new LDAP_Student();
 			$st->setDN($_REQUEST['dn'], true);
 			core_set_param('__schulv_record_dn', $_REQUEST['dn'], $this->argv['prefix']);
 

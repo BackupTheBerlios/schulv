@@ -1,9 +1,5 @@
 <?php
 
-class studentTemplates {
-
-};
-
 class schulvDatasourceStudentListe extends controlDatasource {
 	var $attribs;
 	var $ldap_result;
@@ -45,12 +41,10 @@ class schulvDatasourceStudentListe extends controlDatasource {
 
 	function init() {
 		$this->pos = 0;
-		$st = new Student();
+		$st = new LDAP_Student();
 		if (($this->ldap_result = $st->search($this->attribs))) {
 //			print_er($this->ldap_result);
-
-			$tree = domxml_node($this->argv('template', 'students'));
-			return $tree;
+			return true;
 		}
 		return false;
 	}
@@ -74,6 +68,6 @@ class schulvDatasourceStudentListe extends controlDatasource {
 
 };
 
-ControlHelper::add_datasource("schulv::student::liste", "schulvDatasourceStudentListe");
+core_register_datasource("schulv::student::liste", "schulvDatasourceStudentListe");
 
 ?>
