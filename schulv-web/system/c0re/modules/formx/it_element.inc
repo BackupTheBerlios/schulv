@@ -214,6 +214,7 @@ class it_checkbox extends it_element {
 	}
 
 	function validate() {
+		// no op
 		return true;
 	}
 
@@ -251,6 +252,43 @@ class it_textarea extends it_element {
 		}
 
 		return !array_key_exists('__error', $this->el);
+	}
+};
+
+class it_select extends it_element {
+
+	function it_select(&$el) {
+		$this->it_element($el);
+	}
+
+	function show() {
+		$this->prepend_error_node();
+
+		$node = $this->el['__node'];
+
+		if ($node->has_child_nodes()) {
+			foreach ($node->children() as $child) {
+				$key = get_attribute("value", $child);
+				if (in_array($key, $this->el['__loaded_value']))
+					$child->set_attribute("selected", "");
+			}
+		}
+	}
+
+	function validate() {
+		// no op
+		return true;
+	}
+
+	function load() {
+		it_element::load();
+
+		if (!array_key_exists('__loaded_value', $this->el))
+			$this->el['__loaded_value'] = array();
+
+		if (is_string($this->el['__loaded_value'])) {
+			$this->el['__loaded_value'] = split(",", $this->el['__loaded_value']);
+		}
 	}
 };
 
