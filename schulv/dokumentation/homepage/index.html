@@ -22,6 +22,7 @@ im Schulbereich</a></p>
 <a href="#entscheidung">bereits getroffene Entscheidungen</a><p>
 <a href="#help">m&ouml;gliche Unterst&uuml;tzung</a><p>
 <a href="#sponsors">unsere Unterst&uuml;tzer</a><p>
+<a href="#tools">Werkzeuge zur Entwicklung</a><p>
 <a href="#history">kleiner historischer &Uuml;berblick</a><p>
 
 <a name="intro">
@@ -192,13 +193,67 @@ ebenfalls tatkr&auml;ftig mit und hat auch eine kleine
 </ul><p>
 <font size="-1"><a href="#top">Zur&uuml;ck zum Anfang...</a></font></p>
 
+<a name="tools">
+<h2>Werkzeuge zur Entwicklung</h2></a>
+Mal ganz abgesehen von den diversen Compilern und Servern, hier eine kleine
+Liste von Werkzeugen und deren Einsatz, die bei der Entwicklung f&uuml;r
+dieses genutzt werden:<br>
+<table border="1" align="left" valign="top">
+ <tr>
+  <td><b>Werkzeug</b></td>
+  <td><b>Bemerkungen</b></td>
+ </tr>
+ 	<tr>
+  <td><b><a href="http://www.lysator.liu.se/~alla/dia" target="_blank">Dia</a>
+     </b></td>
+  <td>Tool zum Zeichnen von Vektorgrafiken haupts&auml;chlich im Bereich
+      Software-Diagramme (UML, ERM ...)<br>
+      Es gibt mit Sicherheit wesentlich umfangreichere Werkzeuge, die dem
+      Zeichner mehr Unterst&uuml;tzung und Funktionalit&auml;t bieten, aber
+      der Reiz an Dia liegt in der Einfachheit (auch hinsichtlich der
+      Bedienung)
+  </td>
+ </tr>
+ <tr>
+  <td><b><a href="http://www.iit.edu/~gawojar/ldap" target="_blank">
+       LDAP Browser\Editor (ver 2.8.2)</a></b></td>
+  <td>Ein sehr umfangreiches Programm zur Verwaltung von LDAP Verzeichnissen.
+      Man kann es nat&uuml;rlich auch f&uuml;r OpenLDAP verwenden.<br>
+      Dabei sollte man folgende Einstelloptionen zum OpenLDAP Server beachten,
+      wenn man die slapd.conf und entsprechenden Schematas aus dem CVS
+		verwendet:<p>
+		<ul>
+			<li>Host: localhost bzw. der Rechnername auf dem openldap läuft</li>
+			<li>Port: 389 (wenn ihr nicht openldap auf einem anderen Port
+				laufen habt)</li>
+			<li>Version: 3</li>
+			<li>Base DN: o=schule.edeal.de</li>
+			<li>SSL: nein</li>
+			<li>Anonymous bind: nein</li>
+			<li>User DN: cn=Manager,o=schule.edeal.de</li>
+			<li>append base DN: nein</li>
+			<li>Password: secret</li>
+		</ul>
+	</td>
+ </tr>
+ <tr>
+  <td><b><a href="http://biot.com/gq/" target="_blank">GQ 0.4.0</a></b></td>
+  <td>Ein einfaches Programm zur Verwaltung von LDAP Verzeichnissen. Es ist
+		sicher noch nicht ausgereift, bietet aber auch interessante Sichten auf
+		die Daten.
+  </td>
+ </tr>
+</table>
+<p>
+<font size="-1"><a href="#top">Zur&uuml;ck zum Anfang...</a></font></p>
+
 <a name="history">
 <h2>kleiner historischer &Uuml;berglick</h2></a>
 Die einzelnen Ereignisse sind in umgekehrter Reihenfolge aufgelistet:<br>
-<table>
+<table align="left" border="1" valign="top">
  <tr>
-  <th>Datum</th>
-  <th>Was passierte</th>
+  <td><b>Datum</b></td>
+  <td><b>Was passierte</b></td>
  </tr>
  <tr>
   <td><b>30.01.2002</b></td>
