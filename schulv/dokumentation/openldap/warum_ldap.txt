@@ -1,0 +1,276 @@
+Einführung in OpenLDAP
+======================
+von Lukas Schroeder <lukas@edeal.de>
+
+In dieser Mail moechte ich ein paar der interessanteren LDAP Konzepte
+vorstellen. Es haben nicht nur geekige Faktoren wie "Coolness" oder
+"Hackvalue" dazu gefuehrt, dass wir uns am Ende fuer LDAP entschieden
+haben.
+Ausserdem kennen viele hier LDAP noch nicht genug, um die Konsequenzen,
+die sich daraus ergeben, verstehen zu koennen. Ich versuche daher ein
+kleines bischen Aufklaerungsarbeit zu leisten, und auf Vor- und
+Nachteile hinzuweisen.
+
+
+Grundwissen und eine Installationsanleitung fuer OpenLDAP findet man unter
+anderem im bereits von Heiko D. erwaehnten Selflinux-LDAP-Intro:
+http://cvs.sf.net/cgi-bin/viewcvs.cgi/selflinux/tutorial/advanced/netzwerk_advanced/ldap/intro
+Revision 1.5 ist wohl die gerade aktuelle Fassung...
+
+
+Nun folgt eine kommentierte Liste von LDAP Eigenschaften.  Ich gehe auch
+auf einige wichtige Konzepte ein, die fuer das spaetere Verstaendnis
+unerlaesslich sind...
+
+
+
+Distinguished Name
+==================
+
+Jede Objektinstanz hat automatisch eine ID. Diese ID heisst "DN" bzw.
+Distinguished Name.
+
+Will man eine Objektinstanz referenzieren braucht man nur diesen DN. Das
+Aequivalent der RDBMS zum DN ist wahrscheinlich das bekannte Tupel
+bestehend aus "Wert von ID-Feld"+"Tabellenname".
+
+
+ein Beispiel fuer einen DN:
+cn=foo foo, ou=schueler, o=schule
+
+Dieser DN gibt auch gleich die Position im Baum an:
+Schule
+  |
+  |-> Schueler
+        |
+        |-> foo foo
+        |-> [weitere schueler]
+  |-> [weitere "organisatorische Einheiten" (organizationalUnit, "ou").
+       z.B. Lehrer, User, Angestellte, ...]
+
+
+Der DN ist eine komma-separierte Liste von sogenannten RDNs. RDN heisst
+"Relative Distinguished Name".
+
+
+
+Standardisierter Import/Export
+==============================
+
+LDAP Daten werden im LDIF (LDAP Data Interchange Format). Es ist hoechst
+offiziell in RFC 2849 spezifiziert.
+
+Dieses Format wird verwendet werden, um z.B. die Login-Daten vom
+Verwaltungsnetz ins Schuelernetz zu exportieren...
+
+Der Aufbau ist denkbar einfach und human-readable. In der Regel schreibt
+man bei der Einrichtung einer LDAP-DB sogar einige LDIF's von Hand.
+
+Ein Beispiel:
+
+dn: cn=foo foo, ou=schueler, o=schule
+objectclass: top
+objectclass: person
+objectclass: schulvStudent
+surname: foo
+givenname: foo
+cn: foo foo
+userPassword: secret
+login: svfoofoo
+
+Zu Beginn steht die DN und anschliessend werden den Attributen Werte
+zugeordnet. Beim Schreiben einer solchen LDIF Anweisung ist darauf zu
+achten, dass das Attribut, dass als RDN in den DN aufgenommen wird,
+sowohl im vorher angegebenen DN als auch in der darunter stehenden
+Liste identisch sein muss: aus "cn=foo foo" als RDN folgt dass "cn: foo
+foo" auftauchen muss!
+
+
+MULTI-VALUE
+===========
+
+in den bisher z.B. von Karl und Steinchen vorgestellten Objekten
+tauchen immer wieder solche Konstrukte auf:
+
+fach1
+fach2
+...
+fachN
+
+auf. Beim RDBMS geht man so einen Pakt mit dem Teufel ein, und hofft
+niemals mehr als z.B. N Faecher spezifizieren zu muessen...
+
+Bei LDAP kann jedes Attribut eines Objektes mehrere Werte annehmen. Man
+pappt einfach das Attribut "fach" an das Objekt "Schueler" und
+spezifiziert die Werte:
+
+[LDIF Format, man siehe oben und haenge diese Zeilen an obiges
+LDIF-Beispiel an]
+
+fach: Englisch
+fach: Deutsch
+fach: Suaheli
+
+Diese MULTI-VALUE Faehigkeit der Attribute ist sogar das
+Standardverhalten. Um dies zu verhindern (z.B. fuer "login", wenn es je
+Schueler nur einen Loginnamen gibt), dann gibt man SINGLE-VALUE in der
+Attributsspezifikation im Schema an.
+
+
+Suchfilter
+==========
+
+LDAP besitzt natuerlich auch eine sehr flexible Moeglichkeit der Suche.
+Man arbeitet hier mit Filtern. Um z.B. alle Schueler zu finden, die im
+Fach Englisch unterrichtet werden, benutzt man folgenden Suchfilter:
+
+(&(objectClass=schulvStudent)(fach=Englisch))
+
+Bei jeder Suchanfrage wird zu jeder gefundenen Objektinstanz die DN
+sowie alle gesetzten Attribute zurueckgeliefert.
+Zusaetzlich zum Suchfilter kann man auch die vom Server
+zurueckzuliefernden Attribute einschraenken. Beispielsweise kann man
+sich nur das Attribut "fach" ausgeben lassen, wenn man daran
+interessiert ist, welche Faecherkombinationen zusammen mit Englisch
+auftreten...
+
+Oder, will man herausfinden, welche Schueler die Sprachkombination
+English und Suaheli gewaehlt haben, verwendet man einfach:
+
+(&(objectClass=schulvStudent)(fach=Englisch)(fach=Suaheli))
+
+LDAP Suchfilter unterstuetzen aber auch Wildcards.
+Beispielsweise sucht folgender Filter nach Lehrern, deren Vorname mit
+"Fo" anfaengt:
+
+(&(objectclass=schulvLehrer)(givenname=Fo*))
+
+Wildcard matching funktioniert auch wie erwartet mit *Fo oder *Fo*
+Es gibt natuerlich zur Und- auch eine Oder-Verknuepfung, sowie eine
+Negation.
+
+Ein Filter zur Suche nach Schuelern, die in Englisch und nicht
+in Suaheli unterrichtet werden:
+(&(objectClass=schulvStudent)(fach=Englisch)(!(fach=Suaheli)))
+
+Ueber einen Filter (fach=*) lassen sich alle DNs, die mindestens ein
+Fach angegeben haben, heraussuchen.
+Mit (!(fach=*)) findet man alle Datensaetze fuer die bisher _kein_ Fach
+angegeben wurde.
+
+Suchfilter sind eine flexible und sogar weitgehend intuitive
+Moeglichkeit die Datenbank zu durchforsten.
+
+RFC 2254 spezifiziert das LDAP Suchfilter-Format.
+
+
+Hinfort!! du Tupel du starres
+=============================
+
+RDBMS definieren durch die Tabellen jede Entitaet als starres n-Tupel.
+Fuer jeden Datensatz muessen alle Werte des Tupels gefuellt werden; die
+meisten (alle?) RDBMS definieren aber einen (magischen) NULL-Wert, um zu
+speichern, dass ein Feld im Tupel "wertlos" ist.
+
+Besonders bei "fach1...fachN" Konstrukten wird man von diesem
+Tupel-Zwang in den Hintern gebissen. Es wirkt einfach nicht immer so
+elegant, wie mans gerne haette.
+
+Das oben beschriebene MULTI-VALUE Feature bietet einen sehr
+eleganten Ausweg, und die Suchfilter stellen auch keinerlei
+Einschraenkung bzgl. des Zugriffs dar.
+
+
+LDAP's Idee von freien Attribut-Listen
+======================================
+
+als Antwort zur Mail "Objekt Schüler" schrieb Guido Ehlert unter
+anderem:
+
+,------->
+| Sebastian Stein schrieb:
+| > 
+| > Es gibt mit Sicherheit ein Objekt Schüler. Diese Attribute haben wir
+| > bisher
+| > zusammengetragen, macht Anmerkungen, welche noch fehlen:
+| 
+| Hm, bei Schülern kann man je nach Verwendungszweck so viele verschiedene
+| Daten sammeln, deshalb habe ich etwas Bauchschmerzene, die Attribute 
+| jetzt gleich definitiv festzulegen. Ich weiß nicht wie es bei LDAP
+| läuft, aber in 'ner Datenbank würde ich eine Tabelle
+| Schueler_Eigenschaften machen, mit den Feldern
+| 
+|    Schueler_ID
+|    Attribut_Name
+|    Attribut_Wert
+`----------------------->
+
+Aufgrund der Herumtupelei von RDMBS' ist dies ein haeufig gewaehlter,
+und flexibler Weg in einer Welt, in der von MULTI-VALUE nur getraeumt
+wird ;)
+
+LDAP kennt soetwas fuer alle "extensibleObject"s. Ist ein Objekt im
+Sinne von LDAP "extensible" dann kann es dynamisch jedes Attribut
+zugewiesen bekommen.
+Man wird in der LDAP Gemeinde allerdings (zu Recht ;) fast geaechtet,
+wenn man dies tut, weil es
+a) MULTI-VALUE ignoriert und
+b) das Schema eines Objekts voellig ausser Acht laesst. (BAH!)
+
+Aber dank MULTI-VALUE und der flexiblen Suchfilter laesst sich dieses
+Feature auch anders ganz leicht umsetzen:
+Ein Objekt bekommt ein Attribut "attribute", dessen Werte
+Key=Value-Paare sind:
+
+attribute: kann-kauen=ja
+attribute: kann-pfeifen=nein
+
+Fuer den Schul-Chor lassen sich nun per Suchfilter ganz leicht alle Leute
+ausfindig machen, die Pfeifen koennen....
+
+Aehlich koennte man z.B. auch die Leistungen erfassen:
+
+leistung: englisch=ausreichend
+leistung: deutsch=ausreichend
+leistung: pfeifen fuer anfaenger ag=teilgenommen
+
+
+
+Wie gelesen besitzt LDAP ein paar Features, die den RDBMS's einige
+Kopfschmerzen bereitet haben (ganz vorne mit dabei ist MULTI-VALUE). IBM
+Research z.B. hat einen Bericht darueber, wie man deren DB2 per LDAP
+interfaced[*]. Man sieht auch, es ist nicht unmoeglich, erfordert
+aber einiges an Fummelei fuer die Entwickler...
+[*] http://www.research.ibm.com/journal/sj/392/shi.html
+    (gepostet auf fsub-offen am 30.01.2001 von Wolfgang Ebneter)
+
+
+
+Natuerlich muss man Jochen Adler zustimmen, wenn er sagt:
+
+,------>
+| "Glaubt irgendwer wirklich, da hätte jemand Lust, die Stammdaten für
+| 1500 Schüler neu einzutippen?  Also: Es müssen Tools her, die die
+| vorhandenen Daten übernehmen."
+`-------------->
+
+Eine Datenuebernahme von einem RDBMS nach LDAP macht in praktisch allen
+Faellen eine entsprechende Analyse des Ursprungsdatenmodells
+erforderlich.  Im Besonderen erwarte ich Kopfschmerzen beim
+Zusammenpuzzeln der RDBMS-"Wert von ID-Feld"+"Tabelle" Tupel und dem
+Aufbauen entsprechender DN-Referenzen.
+
+Daher muss ich Jochen Adler auch zustimmen, wenn er behauptet, dass wir
+bei der Erstellung dieser Tools "noch ziemlich ins Schwitzen kommen".
+
+Allerdings ist nicht anzunehmen, dass die Analysearbeit geringer
+ausfallen wuerde, wenn man von einem RDBMS-Datenmodell in ein anderes
+exportiert/importiert!
+
+Ums Schwitzen kommen wir IMHO also in keinem Fall herum. Allerdings
+haben wir mit LDIF schon einen einsatzbereiten Import-Mediator.
+Wir muessen somit "nur" aus den RDBMS-Daten eine passende LDIF-Datei
+zusammenzimmern.
+
+Ich hoffe diese Mail hat einige noetige Informationen geliefert, um mit
+der Entscheidung "pro LDAP" gluecklicher zu werden.
