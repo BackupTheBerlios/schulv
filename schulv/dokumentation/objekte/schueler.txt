@@ -8,6 +8,7 @@ telefon zu hause
 
 geburtstag
 geschlecht (bei den wunderlichen Namen heutzutage...)
+Staatsangehörigkeit
 
 Vorname Erziehungsberechtigter 1
 Nachname Erziehungsberechtigter 1
