@@ -53,7 +53,7 @@ function core_use_xsl($file) {
 
 function core_execute($file) {
 	if (!file_exists($file)) {
-		header("HTTP/1.0 404 File not found");
+		header("HTTP/1.0 404 Not Found");
 		echo "<h2>404 File not found</h2>";
 		echo "The file ".$_SERVER["PHP_SELF"]." was not found on this server";
 		exit();
@@ -61,7 +61,13 @@ function core_execute($file) {
 	$fd = fopen($file, "r");
 	$myXML = fread($fd, filesize($file));
 	fclose($fd);
-	$docTree = xmltree($myXML);
+	if (!($docTree = xmltree($myXML))) {
+		header("HTTP/1.0 500 Internal Server Error");
+		echo "<h2>500 Internal Server Error</h2>\n";
+		echo "Failed to parse the requested file ".$_SERVER['PHP_SELF'].".<br/>\n";
+		echo "Refer to the error_log for details.";
+		exit();
+	}
 	$root = $docTree->children[0];
 	$content = xml_parse_from_array($root);
 
