@@ -1,0 +1,486 @@
+#     Base OID: 1.3.6.1.4.1.11357.2001.1.1.
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.1
+	NAME (
+		'firmwidebook'
+		)
+	SUP name
+	)
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.2
+	NAME (
+		'rolodapPersonalBook'
+		)
+	SUP distinguishedName
+	)
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.3
+	NAME (
+		'rolodapBook'
+		)
+	SUP distinguishedName
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.4
+	NAME (
+		'memberof'
+		)
+	SUP name 
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.5
+	NAME (
+		'referredby'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.6
+	NAME (
+		'lastupdated'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.7
+	NAME (
+		'createdon'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.8
+	NAME (
+		'modifiedon'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.9
+	NAME (
+		'deletedon'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.10
+	NAME (
+		'companyname'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.11
+	NAME (
+		'affiliation'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.12
+	NAME (
+		'spousename'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.13
+	NAME (
+		'homechildren'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.14
+	NAME (
+		'department'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.15
+	NAME (
+		'url'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.16
+	NAME (
+		'officeextension'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.17
+	NAME (
+		'active'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.18
+	NAME (
+		'rolodapbookpersonal'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.19
+	NAME (
+		'createdby'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.20
+	NAME (
+		'modifiedby'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.21
+	NAME (
+		'deletedby'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.22
+	NAME (
+		'admincode'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.23
+	NAME (
+		'clientnumber'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.24
+	NAME (
+		'homemail'
+		)
+	SUP mail
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.25
+	NAME (
+		'rolodaplastuid'
+		)
+	SUP uid
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.26
+	NAME (
+		'rolodapbgcolor'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.27
+	NAME (
+		'rolodaptextcolor'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.28
+	NAME (
+		'rolodaplinkcolor'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.29
+	NAME (
+		'rolodapnamerowcolor'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.30
+	NAME (
+		'rolodapnamerowfontcolor'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.31
+	NAME (
+		'rolodaptitlebarcolor'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.32
+	NAME (
+		'rolodaptitlebarfontcolor'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.33
+	NAME (
+		'rolodaptheme'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.34
+	NAME (
+		'otherphone'
+		)
+	SUP name
+	)		
+
+
+# attributetype ( 1.3.6.1.4.1.11357.2002.1.1.35
+# 	NAME (
+# 		'owner'
+# 		)
+# 	SUP name
+# 	)		
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.36
+	NAME (
+		'notesurl'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.37
+	NAME (
+		'userscode'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.38
+	NAME (
+		'rolodapadmin'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.39
+	NAME (
+		'rolodapwarn'
+		)
+	SUP name
+	)
+
+# attributetype ( 1.3.6.1.4.1.11357.2002.1.1.40
+# 	NAME (
+# 		'secretary'
+# 		)
+# 	SUP name
+# 	)
+
+# attributetype ( 1.3.6.1.4.1.11357.2002.1.1.41
+# 	NAME (
+# 		'homephone'
+# 		)
+# 	SUP telephonenumber
+# 	)
+
+
+# attributetype ( 1.3.6.1.4.1.11357.2002.1.1.42
+# 	NAME (
+# 		'homepostaladdress'
+# 		)
+# 	SUP postaladdress
+# 	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.43
+	NAME (
+		'initial'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.44
+	NAME (
+		'relationship'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.45
+	NAME (
+		'salutation'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.46
+        NAME (
+                'referraldn'
+                )
+        SUP name
+        )
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.47
+        NAME (
+                'referralserver'
+                )
+        SUP name
+        )
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.48
+        NAME (
+		'resultstyle'
+		)
+	SUP name
+	)
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.49
+	NAME (
+		'bookstyle'
+		)
+	SUP name
+	)
+
+
+attributetype ( 1.3.6.1.4.1.11357.2002.1.1.50
+	NAME (
+		'accesscodes'
+		)
+	SUP name
+	)
+
+
+objectclass ( 1.3.6.1.4.1.11357.2002.1.2.1
+        NAME 'rolodapReferral'
+        DESC 'Rolodap referral from another db'
+        SUP  person
+        MUST ( referraldn $ referralserver )
+        )
+
+
+objectclass ( 1.3.6.1.4.1.11357.2002.1.2.2
+	NAME 'rolodapUser'
+	DESC 'Rolodap user information'
+	SUP person
+	MAY (
+		rolodapPersonalBook $
+		rolodapBook $
+		rolodapbgcolor $
+		rolodaptextcolor $
+		rolodaplinkcolor $
+		rolodapnamerowcolor $
+		rolodapnamerowfontcolor $
+		rolodaptitlebarcolor $
+		rolodaptitlebarfontcolor $
+		rolodaptheme $
+                resultstyle $
+                bookstyle $
+		rolodapadmin $
+		uid $
+		givenname $
+		userpassword 
+		)
+	)
+		
+objectclass ( 1.3.6.1.4.1.11357.2002.1.2.3
+	NAME 'rolodapContact'
+	DESC 'Rolodap contact informations'
+	SUP person
+	MUST (
+		uid $
+		cn $
+		sn
+		)
+	MAY (
+		givenname $
+		initial $
+		memberof $
+		salutation $
+		lastupdated $
+		referredby $
+		companyname $
+		affiliation $
+		relationship $
+		clientnumber $
+		createdby $
+		createdon $
+		modifiedby $
+		modifiedon $
+		spousename $
+		homechildren $
+		department $
+		url $
+		facsimiletelephonenumber $
+		mail $
+		officeextension $
+		secretary $
+		title $
+		postaladdress $
+		homephone $
+		otherphone $
+		homemail $
+		description $
+		deletedby $
+		deletedon $
+		admincode $
+		owner $
+		homepostaladdress $
+		notesurl $
+		userscode $
+		preferreddeliverymethod $
+		rolodapwarn $
+		accesscodes $
+		active
+		)
+	)
+
+objectclass ( 1.3.6.1.4.1.11357.2002.1.2.4
+	NAME 'rolodapAdmin'
+	DESC 'Rolodap administration information'
+	SUP top
+	MUST (
+		cn $
+		rolodaplastuid
+		)
+	)
+
+objectclass ( 1.3.6.1.4.1.11357.2002.1.2.5
+	NAME 'rolodapBook'
+	DESC 'Rolodap adressbook'
+	SUP top
+	MUST (
+		cn
+		)
+	MAY (
+		createdby $
+		createdon $
+		modifiedby $
+		modifiedon $
+		deletedby $
+		deletedon $
+		url $
+		rolodapbookpersonal $
+		uniquemember $
+		description $
+		firmwidebook $
+		active
+		)
+	)
+
+# objectclass ( 1.3.6.1.4.1.11357.2002.1.2.6
+# 	NAME 'inetorgperson'
+# 	DESC 'inetorgperson'
+# 	SUP 'person'
+# 	MUST (
+# 		uid
+# 		)
+# 	MAY (
+# 		cn $
+# 		sn $
+# 		givenname $
+# 		mail
+# 		)
+# 	)
+
