@@ -2,11 +2,21 @@
 
 require_once("config.php");
 
-require_once("ldap/Lehrer.php");
+require_once("verwaltung/LDAP_Lehramt.php");
+require_once("verwaltung/LDAP_Lehrbefaehigung.php");
+require_once("verwaltung/ds-lehramt.php");
+require_once("verwaltung/ds-lehrbefaehigung.php");
 
 require_once("student/LDAP_Student.php");
 require_once('student/druid.php');
 require_once('student/datasource.php');
+
+require_once("lehrer/LDAP_Lehrer.php");
+require_once("lehrer/druid.php");
+require_once("lehrer/datasource.php");
+
+require_once("schule/LDAP_Schule.php");
+require_once("schule/druid.php");
 
 
 class Schulv
@@ -24,7 +34,7 @@ class Schulv
 		return $ldap;
 	}
 
-	function baseDN($unit = "students") {
+	function baseDN($unit) {
 		if (!is_string($unit) || !strlen($unit))
 			die("Schulv::baseDN braucht eine organizationalUnit als Parameter!");
 		return sprintf("ou=%s,%s", $unit, SCHULV_SUFFIX);
