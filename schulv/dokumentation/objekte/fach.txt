@@ -2,6 +2,7 @@ ID
 Fachklasse (ID aus Fachklasse)
 Name
 Zeitraum des Faches (damit auch Kurse abgebildet werden können)
+nötige Unterrichtseinheiten pro Woche (oder pro Zeitraum?)
 
 man wird jedem Fach verschiedene Lehrer zuordnen, wobei jeder Lehrer 
 natürlich mehreren Fächern zugeordnet sein kann.
