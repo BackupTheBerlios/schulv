@@ -26,6 +26,14 @@ require_once('schulv/schulv.php');
 
 $file = $SCHULV_ROOT."/".$_SERVER['PHP_SELF'];
 if (is_dir($file)) {
+
+	/* emulate normal webserver behaviour: append / to directories */
+	if ($file[strlen($file)-1] != '/') {
+		header("HTTP/1.0 301 Moved Permanently");
+		header("Location: ".$_SERVER['PHP_SELF']."/");
+		exit();
+	}
+
 	$search = array("/index.php", "/index.xml", "/index.html");
 	$found = false;
 	foreach ($search as $s) {
@@ -35,6 +43,7 @@ if (is_dir($file)) {
 			break;
 		}
 	}
+
 	if (!$found) {
         header("HTTP/1.0 404 Not Found");
 		echo "<h2>404 File not found</h2>";
