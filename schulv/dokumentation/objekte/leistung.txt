@@ -1,0 +1,15 @@
+Man kann dies nicht allgemein formulieren, sondern es muss eine Anpassung
+für jedes Fach möglich sein.
+
+Deshalb ein zusammengesetzter Schlüssel:
+
+Fach-ID + Schüler-ID
+
+Note 1
+Gewichtung 1
+...
+Note n
+Gewichtung n
+
+Es ist dabei zu beachten, dass die Gewichtung und Anzahl der Noten dynamisch 
+vom Lehrer anzulegen sind.

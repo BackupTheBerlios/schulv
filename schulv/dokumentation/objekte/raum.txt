@@ -1,0 +1,7 @@
+ID
+Bezeichnung
+
+Man ordnet jedem Raum eine oder mehrere Fachklassen zu, damit klar ist, was 
+in diesem Raum für Fächer möglich sind.
+
+Dabei sind Prioritäten vorzusehen. Evt. eine Art Highscore oder so.

@@ -1,0 +1,16 @@
+ID (Schlüssel)
+Nachname
+Vorname
+plz
+ort
+strasse
+telefon
+
+Geburtsdatum
+Geschlecht
+
+fach1 bis n -> nein, man bildet das Objekt Fach und ordnet
+jedem Fach mehrere Lehrer zu
+
+weiterhin muss vermerkt werden, zu welchen Zeiten er in der Woche arbeiten
+kann, da es ja auch Lehrer gibt, die zwischen mehreren Schulen pendeln

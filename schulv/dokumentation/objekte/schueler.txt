@@ -1,0 +1,32 @@
+ID (Schlüssel)
+Nachname
+Vorname
+plz
+Ort
+strasse
+telefon zu hause
+
+geburtstag
+geschlecht (bei den wunderlichen Namen heutzutage...)
+
+Vorname Erziehungsberechtigter 1
+Nachname Erziehungsberechtigter 1
+Telefon tagsüber 1
+
+Vorname Erziehungsberechtigter 2
+Nachname Erziehungsberechtigter 2
+Telefon tagsüber 2
+
+Schuleintritts-Datum
+Grundschule
+1. weiterführende Schule
+2. weiterführende Schule
+3. weiterführende Schule
+4. weiterführende Schule
+
+Verwarnungen (jeweils beliebig langes Eingabefeld)
+Abmahnungen
+Verweise
+
+bekannte Krankheiten
+Feld über Bemerkungen zum Schüler (Lernschwäche, Drogenabhängig...)

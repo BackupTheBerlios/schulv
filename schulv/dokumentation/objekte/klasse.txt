@@ -1,0 +1,4 @@
+ID
+Name
+Klassenlehrer (id aus Lehrer)
+Klassenraum (id aus Raum)

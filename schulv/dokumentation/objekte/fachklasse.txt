@@ -1,0 +1,7 @@
+Man könnte damit alle Fächer von Geschichte (in den verschiedene 
+Klassenstufen) zu einer Klasse gruppieren.
+
+ID
+Bezeichnung
+
+Zuordnung von Fächern
