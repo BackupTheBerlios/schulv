@@ -1,0 +1,11 @@
+<schulv xmlns:cms="http://xml.edeal.de/cms/Format"
+	xmlns:formx="http://xml.edeal.de/formx/Format">
+
+<!-- alten krams loeschen, damit die formulare beim neuen schueler auch wirklich
+  leer sind und kein alter muell in die felder geladen wird -->
+<cms:data-import clear=""/>
+<formx:cleanup values="" marks=""/>
+
+<cms:redirect href="/lehrer/create.xml" />
+
+</schulv>
