@@ -17,6 +17,17 @@ OpenLDAP 2.x
 
 die Einrichtung von OpenLDAP wird an anderer Stelle beschrieben.
 
+*** ACHTUNG ***
+Fuer Schulv ist derzeit ausserdem zu beachten, dass der OpenLDAP-Server auf
+Port 9999 gestartet werden muss.
+
+Und es gibt jetzt mehr als eine LDIF Datei, die importiert werden muss:
+  schulv.ldif, wie gehabt
+  Lehramt.ldif und Lehrbef.ldif enthalten fuer die Lehrerverwaltung notwendige
+  Verwaltungsdaten
+
+Alle ldif-Dateien findet man im Standard-schulv Repository unter openldap/ldif.
+
 
 libxml2, libxslt
 ================
