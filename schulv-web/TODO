@@ -1,53 +1,6 @@
 
-$Id: TODO,v 1.3 2002/02/20 20:24:10 azzit Exp $
+$Id: TODO,v 1.4 2002/03/07 09:58:27 azzit Exp $
 
-
-dispatcher rewrite   *** DONE ***
-
-request handler rewrite  *** DONE ***
-
-,--->
-| löchen von childs muss effektiv möglich sein
-| beispiel: <input type="bla">
-| 				<length_e>bla</length_e>
-| 		  </input>
-| 
-| 		  wird (da length_e nicht in html umgewandelt
-| 		  wird):
-| 
-| 		  <input type="bla">
-| 
-| 		  </input>
-| 
-| 		  da die newlines usw. chardata sind, schicker
-| 		  wäre es wenn da nachher
-| 
-| 		  <input type="bla"/>
-| 
-| 		  stehen würde
-`---------->  *** DONE ***
-
-,------->
-| die elemente werden angelegt im formx_form objekt
-| das show_element sollte ausgelassen werden, da das
-| die domxml struktur zerstören würde, wir müssen
-| also selber anzeigen...das läuft weitestgehend
-| aber ungetestet. was rein muss ist das die felder
-| aus der session vorausgefüllt werden if possible.
------------> *** DONE ***
-
-,-------->
-| was auch noch fehlt ist der komplette kram der
-| zwischen den seiten passiert, also das storing
-| in die session. next_page usw. vieles davon geht
-| über den pre_dispatch und post_dispatch handler
-| die beide noch zu implementieren sind...sollte
-| aber kein stress sein.
-`-----------> *** DONE ***
-
-* steht der ganze kram sind noch die page types zu
-  implementieren, probleme könnte da "summary"
-  machen. da sollten wir uns was anderes überlegen.
 
 * weil jeder tag-handler seine kinder selbst in einer _translate_tree() rekursion
   handlen muss, kann register_tags() umgebaut werden, sodass context-based
@@ -61,7 +14,7 @@ er sollte nicht vollstaendig verschwinden, aber doch weniger aufdringlich
 daherkommen, als das jetzt der fall ist ]
 
 
-* depends_on usw. tut noch nicht fuer abhaengigkeiten zwischen mehreren
+* depends_on usw. tut noch gar nicht fuer abhaengigkeiten zwischen mehreren
   formx-seiten.
 
 
@@ -71,6 +24,18 @@ DOKU
 Was muss noch dokumentiert werden?
 
 <cms:redirect/>
+<cms:data-import/>
 <formx:cleanup/>
+<formx:optionlist datasource= key= label=/>
 
+Datasources:
+  schulv::verwaltung::lehrbefaehigungen
+  schulv::verwaltung::lehraemter
+  schulv::lehrer::liste
+  schulv::student::liste
+
+Druiden:
+  schulv::lehrer
+
+Die Doku fuer schulv::student muss ueberprueft, und ggf. aktualisiert werden.
 
