@@ -1,0 +1,41 @@
+<schulv xmlns:cms="http://xml.edeal.de/cms/Format"
+	xmlns:formx="http://xml.edeal.de/formx/Format">
+
+<cms:data-import clear=""/>
+
+<h2>Schule anlegen</h2>
+
+
+<table width="600">
+
+<formx:form>
+<formx:validator druid="schulv::schule" policy="create"/>
+<formx:storage druid="schulv::schule" policy="create" onsuccess="/"/>
+
+<tr>
+  <td>Schulnr:</td>
+  <td><formx:input type="text" name="schulnr">
+	<formx:valid_e>Nur die Zeichen fuer die Ziffern 0-9 sind gueltig.</formx:valid_e>
+	<formx:valid_regex>^[0-9]+$</formx:valid_regex>
+	<formx:minlength>1</formx:minlength>
+	<formx:length_e>Bitte geben Sie Schulnummer an.</formx:length_e>
+  </formx:input>
+  </td>
+</tr>
+
+<tr>
+  <td>Name der Schule:</td>
+  <td> <formx:input type="text" name="schulname">
+	<formx:valid_e>Bitte geben Sie den Namen der schule an.</formx:valid_e>
+	<formx:valid_regex>^[A-Za-z0-9.-]+$</formx:valid_regex>
+  </formx:input>
+  </td>
+</tr>
+
+<tr><td> <formx:input type="submit" name="submit" value="speichern"/> </td></tr>
+
+</formx:form>
+
+</table>
+
+</schulv>
