@@ -1,0 +1,115 @@
+Konfiguration von OpenLDAP 2.x
+==============================
+
+Original von Lukas Schroeder <lukas@edeal.de>
+Anmerkungen von Sebastian Stein <steinchen@mail.berlios.de>
+
+1) OpenLDAP 2.x installieren
+   (apt, rpm, oder ./configure && make all install)
+
+2) die aktuellen Schemas aus dem CVS laden
+
+3) dem OpenLDAP Server sagen, diese Schemas zu verwenden; dazu ist die
+Datei "etc/openldap/slapd.conf" zu bearbeiten (z.B. am Anfang der Datei
+bzw. da, wo die anderen includes auch stehen):
+
+include $PATHTO/etc/openldap/schema/rolodap.schema
+include $PATHTO/etc/openldap/schema/schulverwaltung.schema
+
+4) das Verzeichnis fuer die Datenbank anlegen und die Rechte setzen:
+z.B.
+mkdir -p /var/openldap/schulverwaltung
+chown $USER:$GROUP /var/openldap/schulverwaltung
+chmod 770 /var/openldap/schulverwaltung
+
+(wo die Distributionen das OpenLDAP var/ Verzeichnis hinlegen, weiss ich
+nicht; $USER und $GROUP sind entsprechend dem Laufzeitverhalten der
+Datenbank anzupassen).
+
+5) die Schulv-Datenbankdefinition in die slapd.conf aufnehmen (z.B. am Ende
+der Datei)
+
+database ldbm
+suffix "o=schule.edeal.de"
+rootdn "cn=manager,o=schule.edeal.de"
+rootpw secret
+directory /var/openldap/schulverwaltung
+index objectClass eq
+
+(fuer [directory] das unter 4 angelegte Verzeichnis angeben).
+
+6) einige Zugriffsrechte in der slapd.conf festlegen (z.B. in der Mitte
+zwischen include und Datenbankdefinition):
+
+Anmerkung: Diesen Schritt kann man am Anfang auch getrost überspringen!
+
+access to dn=".*,ou=users,o=schule.edeal.de"
+        by dn="uid=interface,ou=users,o=schule.edeal.de" auth
+        by group="ou=users,o=schule.edeal.de" read
+        by self write
+        by * auth
+
+access to dn=".*,ou=students,o=schule.edeal.de"
+        by group="cn=users,o=schule.edeal.de" write
+        by dn="uid=interface,ou=users,o=schule.edeal.de" write
+        by self write
+        by * read
+
+access to dn="ou=students,o=schule.edeal.de" attr=children
+        by dn="uid=interface,ou=users,o=schule.edeal.de" write
+        by * read
+
+die DN "uid=interface,ou=users,o=schule.edeal.de" wird von unserem PHP
+Code genutzt, um auf den Server zuzugreifen.
+
+Wem "schule.edeal.de" nicht gefaellt, kann das aendern. Dort soll
+ueber kurz oder lang ein von der Schule bestimmter Name stehen; es ist
+nur sicherzustellen, dass alle Referenzen auf "schule.edeal.de" dann
+auch entsprechend geaendert werden....
+
+Ich kann allerdings noch nicht sagen, ob o=... wirklich das oberste
+Element der Hierarchie bleiben wird, da dies die Erstellung einer
+automatischen bzw. die einfache Durchfuehrung einer manuellen
+Installation deutlich erschwert....aber das ist jetzt noch
+nebensaechlich und laesst sich jederzeit leicht aendern...
+
+7) wenn alles geklappt hat, kann man jetzt den Server starten:
+(als root, da ein port <1024 per default verwendet wird)
+
+starten ueber: $PATHTO/slapd
+
+Der slapd logged per default ueber Syslog LOCAL4. Wenn man will kann man
+dem syslogd das durch einen Eintrag in /etc/syslog.conf beibringen:
+
+local4.*                        -/var/log/openldap-local4.log
+(nach der Aenderung der syslogd.conf muss der natuerlich noch zum
+Neulesen der Config gezwungen werden (restart oder {kill -HUP}pen).
+
+
+Ich habe OpenLDAP aus den Sourcen installiert und folgende
+Verzeichnisstruktur nach make install erhalten:
+
+$PREFIX/etc/openldap      schema/ und slapd.conf
+$PREFIX/libexec           heimat der ./slapd binary
+$PREFIX/var               datenbank-storage verzeichnis
+
+Ich denke, dass Distributionen dies nach /etc/openldap, /usr/sbin und
+/var/openldap (oder aehnlich) packen.
+
+8 Anmerkung) Man sollte jetzt einen LDAP Browser installieren und die nächsten
+Einstellungen mittels grafischer Oberfläche vornehmen, wenn man nicht schon mit
+OpenLDAP vertraut ist. Eine Liste mit möglichen Werkzeugen und deren
+Konfiguration findet man auf der Homepage (http://schulv.berlios.de/)
+
+Mit diesen Werkzeugen ist der Import von ldif Dateien ebenfalls möglich.
+
+8) jetzt, wo der server laeuft, muessen nur noch start-daten rein.
+das geht per LDIF-Input und ldapadd:
+Die LDIF Datei gibts unter http://schule.edeal.de/download/
+
+ldapadd -D "cn=manager, o=schule.edeal.de" -v -f schulv.ldif -x -W
+(der fragt jetzt nach dem Passwort, dass in der Datenbankspezifikation
+angegeben wurde [Schritt 5]).
+
+und wenn auch das geklappt hat, bekommt man mit ldapsearch ein Ergebnis:
+ldapsearch -v -x -W -D "cn=manager,o=schule.edeal.de" -b "o=schule.edeal.de"
