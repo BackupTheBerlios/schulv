@@ -165,8 +165,6 @@ class control extends element {
 				}
 			*/
 		}
-		*/
-		}
 
 		foreach($nodes as $n)
 			$parent->add_child($n);
