@@ -1,0 +1,77 @@
+Hier eine Grobübersicht über die möglichen Fähigkeiten der einzelnen
+Entwickler. Die Entwickler sind in alphabetischer Reihenfolge (nach Vornamen)
+gelistet.
+
+
+Andreas Kalbitz Felix <felix-hh@t-online.de>
+============================================
+
+Ich helfe gern mit PHP und nach Einarbeitung bei der DB-Struktur.
+Doku schreiben, auch wenn es um die Handhabung geht ist sicher auch
+machbar.
+
+
+Guido Ehlert <guido@ge-soft.de>
+===============================
+
+PHP, Datenbanken (SQL, speziell MySQL), von C/C++, Perl etc habe ich
+auch schon was gehört und mich auch schon mal durch die Objektstruktur
+von wxWindows durchgearbeitet (da aber noch nix komplexes realisiert).
+Mit LDAP hatte ich noch gar nichts zu tun.
+
+Speziell für die Schulverwaltungssoftware könnte ich entsprechende Tools
+für den Datenautausch mit der in Berlin/Brandenburg eingesetzen Software
+WinSchule bauen. 
+
+
+Heiko Degenhardt <heiko.degenhardt@pingos.schulnetz.org>
+========================================================
+
+Also ich fuer meinen Teil bin eigentlich (Augen zu) Windows-Programmierer
+(Delphi und C++).
+Derzeit mache ich C auf (Embedded) Linux, was sich aber nicht allzu gross
+von sonstigem Linux unterscheidet.
+Ausserdem habe ich schonmal von PHP gehoert (mal eine ganz kleine
+Datenbanksache gemacht). In der Freizeit programmiere ich (wenn es die Zeit
+erlaubt) Gnome.
+Ich kenne verhaeltnismaessig gut SQL und relationale DBs (insbes. InterBase).
+Fuer Fragen zu CVS stehe ich auch gern zur Verfuegung (bin da wenigstens
+"Anwender").
+
+Ich wuerde meinen Anteil irgendwie im ncurses- und Gnome-Bereich sehen. 
+Ausserdem koennte ich z.B. alten Turbo-Pascal-Code umsetzen, so das vonnoeten
+sein wird.
+
+
+Lukas Schroeder <lukas@edeal.de>
+================================
+
+- Unix Systemadministration
+- C    [Unix/Linux: Client/Server, Systemprogrammierung, GUI mit GTK+]
+- C++  [auch GUI mit wxWindows]
+- PHP  [PHPLIB; PHP3; PHP4]
+- PERL
+- allgemeines Shellscripting inkl. Unix-Tools (sh, bash, sed, awk, ...) 
+- Entwicklung von Client/Server Systemen
+- fundierte Kenntnisse des GNU Autoconf Build Systems
+
+
+Sebastian Stein <steinchen@mail.berlios.de>
+===========================================
+
+Programmiersprachen: C, C++, Turbo Pascal, Delphi, Assembler, VBA
+Web-Design Technologien: HTML, CSS, JavaScript, PHP
+Datenbanken: DBase, SQL (Sybase, MySQL), Embedded SQL mit C
+GUI Oberflächen: Ansi C ;-), Delphi, Qt
+Software-Engineering: DFD, DSD, Struktogramme, Zustandsdiagramme, ERM
+
+
+Stephan Maihöfer <stephan@edeal.de>
+===================================
+
+- PHP (PHPLIB, PHP3, PHP4)
+- SQL
+- Perl
+- HTML, JavaScript, WML
+- XML
+- Unix Administration
