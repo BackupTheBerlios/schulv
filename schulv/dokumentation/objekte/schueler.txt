@@ -1,6 +1,10 @@
 ID (Schlüssel)
 Nachname
 Vorname
+
+Die Adresse wäre auch als eigenständiges Objekt zu sehen und müsste dann
+über Fremdschlüssel eingebunden werden. Dies hätte den Vorteil, dass
+mehrere Adressen einfach zu realisieren wären (multi-value):
 plz
 Ort
 strasse
@@ -10,24 +14,30 @@ geburtstag
 geschlecht (bei den wunderlichen Namen heutzutage...)
 Staatsangehörigkeit
 
+auch über multi-value realisieren (nur, wenn Schüler noch nicht volljährig)
 Vorname Erziehungsberechtigter 1
 Nachname Erziehungsberechtigter 1
 Telefon tagsüber 1
-
 Vorname Erziehungsberechtigter 2
 Nachname Erziehungsberechtigter 2
 Telefon tagsüber 2
 
 Schuleintritts-Datum
+voraussichtlicher Schulabschluss
+
 Grundschule
 1. weiterführende Schule
 2. weiterführende Schule
 3. weiterführende Schule
 4. weiterführende Schule
 
-Verwarnungen (jeweils beliebig langes Eingabefeld)
+jeweils beliebig langes Eingabefeld oder über Fremdschlüssel als Objekt:
+Verwarnungen
 Abmahnungen
 Verweise
 
 bekannte Krankheiten
 Feld über Bemerkungen zum Schüler (Lernschwäche, Drogenabhängig...)
+
+Mehrere Ausbildungswege hinterlegen, die sich per multi-value auf Instanzen von
+Objekt Ausbildungsweg beziehen.
