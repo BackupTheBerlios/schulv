@@ -1,5 +1,5 @@
 # Mini-cvs-HowTo für Nerlios 02.02.2002
-# A. Klabitz
+# A. Kalbitz
 #
 # Es traten Schwierigkeiten bei der Verbindung per ssh auf.
 #
@@ -28,7 +28,7 @@ felix@private:~/sv>
 Einfügen einer Datei 
 --------------------
 felix@host:~/sv/test> cvs -d:pserver:felix@cvs.schulv.berlios.de:/cvsroot/schulv add mini-cvs-howto
-felix@private:~/sv> 
+felix@private:~/sv/test> 
 
 Bekanntgabe der neuen Datei im Repository
 -----------------------------------------
